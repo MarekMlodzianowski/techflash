@@ -1,3 +1,23 @@
 {
-  "singleQuote": true
+  "$schema": "http://json.schemastore.org/prettierrc",
+  "singleQuote": true,
+  "trailingComma": "all",
+  "printWidth": 100,
+  "singleAttributePerLine": true,
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "useTabs": true,
+  "htmlWhitespaceSensitivity": "ignore",
+  "bracketSpacing": true,
+  "quoteProps": "as-needed",
+  "tabWidth": 2,
+
+  "overrides": [
+    {
+      "files": "*.json",
+      "options": {
+        "printWidth": 200
+      }
+    }
+  ]
 }
