@@ -1,5 +1,6 @@
 :root {
 	--color-primary: #007bff;
+	--color-primary_dark: #0056b3;
 	--color-secondary: #6c757d;
 	--color-success: #28a745;
 	--color-danger: #dc3545;
@@ -8,9 +9,13 @@
 	--color-light: #f8f9fa;
 	--color-dark: #343a40;
 
+	--color-dark-blue: #1c2038;
+
 	// Page background, slighty slate
-	--color-slate: #f8f9fa;
+	--color-slate: #e7e7e7;
 	--color-page-background: var(--color-slate);
+
+	--color-font: var(--color-dark-blue);
 }
 
 * {
@@ -22,11 +27,157 @@ body {
 	height: 100%;
 }
 body {
-	font-family: Roboto, 'Helvetica Neue', sans-serif;
+	font-family: 'Atkinson Hyperlegible', Roboto, 'Helvetica Neue', sans-serif;
 	margin: 0;
 	padding: 0;
+	position: relative;
+	color: var(--color-font);
 
 	scroll-behavior: smooth;
 	text-size-adjust: auto;
 	background-color: var(--color-page-background);
+	background: linear-gradient(
+		135deg,
+		rgba(255, 255, 255, 1) 0%,
+		rgba(250, 250, 255, 1) 35%,
+		rgba(255, 250, 250, 1) 100%
+	);
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Crect width='10' height='10' fill='rgba(255,255,255,0)'/%3E%3Ccircle cx='5' cy='5' r='1' fill='rgba(28, 32, 56,0.1)'/%3E%3C/svg%3E");
+
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cdefs%3E%3Cpattern id='lines' width='40' height='40' patternUnits='userSpaceOnUse'%3E%3Cline x1='0' y1='20' x2='40' y2='20' stroke='rgba(0,0,0,0.03)' stroke-width='2'/%3E%3Cline x1='20' y1='0' x2='20' y2='40' stroke='rgba(0,0,0,0.03)' stroke-width='2'/%3E%3Cline x1='0' y1='0' x2='40' y2='40' stroke='rgba(0,0,0,0.03)' stroke-width='1'/%3E%3Cline x1='40' y1='0' x2='0' y2='40' stroke='rgba(0,0,0,0.03)' stroke-width='1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='200' height='200' fill='url(%23lines)'/%3E%3C/svg%3E");
+
+	background-repeat: repeat;
+	background-attachment: fixed;
+
+	&:before {
+		content: '';
+		display: block;
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		background: linear-gradient(135deg, #e0f2f7, #cce0e8, #d1e9f0); /* Soft blue variations */
+		z-index: -1;
+		opacity: 0.2;
+	}
+}
+ul,
+p {
+	margin: 0;
+}
+
+ul {
+	padding: 0;
+	list-style-type: none;
+}
+
+/* Utils #######################################*/
+
+.flex {
+	display: flex;
+	&.col,
+	&.column {
+		flex-direction: column;
+	}
+
+	&.a-center {
+		align-items: center;
+	}
+}
+
+.flex,
+.grid {
+	@for $i from 1 through 24 {
+		&.gap-#{$i} {
+			gap: #{$i}px;
+		}
+	}
+}
+
+/* Common UI ####################################### */
+.tile {
+	background-color: var(--color-light);
+	border-radius: 0.25rem;
+	border: solid 1px var(--color-slate);
+	padding: 16px;
+
+	&.glass {
+		background-color: rgba(255, 255, 255, 0);
+		backdrop-filter: blur(10px);
+	}
+}
+.shadow {
+	box-shadow: 0 11px 16px rgba(0, 0, 0, 0.15);
+}
+
+a,
+.link {
+	color: var(--color-primary);
+	text-decoration: none;
+
+	&:hover {
+		// text-decoration: underline;
+		color: var(--color-primary_dark);
+	}
+}
+
+/* Material Overwrite ####################################### */
+
+.mat-icon {
+	color: inherit;
+}
+
+.material-symbols-outlined {
+	font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Debugging ####################################### */
+pre {
+	background-color: #f8f9fa;
+	border: 1px solid var(--color-slate);
+	border-radius: 0.25rem;
+	padding: 16px;
+	white-space: pre-wrap;
+
+	&.crt {
+		background-color: #000;
+		color: #00ff00;
+		text-shadow: 0 0 5px #00ff00;
+		box-shadow: 0 0 10px 5px #00ff00;
+	}
+}
+
+/* Routing #######################################*/
+/* Custom transition */
+
+/* CSS transitions for page animations */
+::view-transition-old(root) {
+	animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-out;
+}
+
+::view-transition-new(root) {
+	animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-in;
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes fade-out {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+}
+
+.page-container {
+	position: relative;
+	flex: 1;
+	width: 100%;
 }

@@ -1,0 +1,20 @@
+{
+	"name": "@techflash/-ui",
+	"$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "apps/techflash/modules/shared/shared-ui/src",
+	"prefix": "tech",
+	"projectType": "library",
+	"tags": ["shared"],
+	"targets": {
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "apps/techflash/modules/shared/shared-ui/jest.config.ts"
+			}
+		},
+		"lint": {
+			"executor": "@nx/eslint:lint"
+		}
+	}
+}
