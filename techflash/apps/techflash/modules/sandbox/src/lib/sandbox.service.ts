@@ -37,14 +37,9 @@ export class SandboxService {
 
 	#user = computed(() => this.#userById?.value());
 
-	#isFetching = computed(() => {
-		return (
-			this.#allUsers.isLoading() ||
-			this.#userById.isLoading() ||
-			this.#userCompany.isLoading() ||
-			this.#relatedUsers.isLoading()
-		);
-	});
+	#pendingRequests = signal<string[]>([]);
+
+	#isFetching = computed(() => this.#pendingRequests().length > 0);
 
 	#allUsers = rxResource({
 		loader: () => this.http.get<User[]>(`/api/users/all`),
@@ -77,13 +72,25 @@ export class SandboxService {
 
 	setId = (value: number) => this.#id.set(value);
 
-	allUsers = () => this.#allUsers;
+	getAllUsers = () => this.#allUsers.asReadonly();
 
-	getUserResource = () => this.#userById;
+	getUserResource = () => this.#userById.asReadonly();
 
-	getUserCountry = () => this.#userCompany;
+	getUserCOmpany = () => this.#userCompany.asReadonly();
 
-	getRelatedUsers = () => this.#relatedUsers;
+	getRelatedUsers = () => this.#relatedUsers.asReadonly();
 
 	isFetching = () => this.#isFetching;
+
+	setPendingRequest = (request: string, action: 'remove' | 'add' = 'add') => {
+		if (action === 'remove') {
+			setTimeout(() => {
+				this.#pendingRequests.set(this.#pendingRequests().filter((r) => r !== request));
+			}, 1000);
+
+			return;
+		}
+
+		this.#pendingRequests.set([...this.#pendingRequests(), request]);
+	};
 }

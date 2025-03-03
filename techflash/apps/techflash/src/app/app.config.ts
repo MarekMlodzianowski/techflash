@@ -14,12 +14,13 @@ import {
 } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import '@angular/common/locales/global/pl';
+import { httpInterceptor } from './core/interceptors/http.interceptor';
 
 export const appConfig: ApplicationConfig = {
 	providers: [
-		provideHttpClient(),
+		provideHttpClient(withInterceptors([httpInterceptor])),
 		provideZoneChangeDetection({ eventCoalescing: true }),
 		provideRouter(
 			appRoutes,

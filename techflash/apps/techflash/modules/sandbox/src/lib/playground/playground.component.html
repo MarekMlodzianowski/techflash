@@ -22,7 +22,10 @@
 	>
 		@let userValue = userResource.value();
 
-		<div class="grid gap-4 col-3">
+		<div
+			class="grid gap-4"
+			[ngClass]="[windowSize() < 768 ? 'col-1' : 'col-3']"
+		>
 			<div class="flex col gap-4">
 				<span class="font-xs">Name:</span>
 				<span>{{ userValue?.name }}</span>
@@ -55,7 +58,10 @@
 		[resource]="userCompany"
 	>
 		@let userCompanyVal = userCompany.value();
-		<div class="grid gap-4 col-3">
+		<div
+			class="grid gap-4"
+			[ngClass]="[windowSize() < 768 ? 'col-1' : 'col-3']"
+		>
 			<div class="flex col gap-4">
 				<span class="font-xs">Name:</span>
 				<a>{{ userCompanyVal?.name ?? '...' }}</a>
@@ -87,7 +93,10 @@
 		[title]="'Related users'"
 		[resource]="relatedUsers"
 	>
-		<div class="grid gap-6 col-3 related-users">
+		<div
+			class="grid gap-6 related-users"
+			[ngClass]="[windowSize() < 768 ? 'col-1' : 'col-3']"
+		>
 			<span class="font-xs">Name:</span>
 			<span class="font-xs">Email:</span>
 			<span class="font-xs">Phone:</span>

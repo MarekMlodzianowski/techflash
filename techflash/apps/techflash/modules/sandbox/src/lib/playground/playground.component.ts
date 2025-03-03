@@ -18,6 +18,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
 import { Location } from '@angular/common';
+import { debounceTime, fromEvent, map, tap } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 export type User = {
 	id: number;
@@ -46,15 +48,18 @@ export type User = {
 	],
 	templateUrl: './playground.component.html',
 	host: {
-		class: `flex column gap-24  border-radius--${16 + 8}`,
+		class: `flex column gap-24 border-radius--${16 + 8}`,
+		'[class.mobile]': 'windowSize() < 768',
 	},
 	styles: `
   :host {
    padding:16px;
    border:solid 1px var(--color-slate);
-  .title {
-         margin:0;
-  }}
+   &.mobile {
+    margin: 0 16px;
+    font-size: 18px;
+   }
+  .title {margin:0}}
     `,
 })
 export class PlaygroundComponent {
@@ -64,12 +69,20 @@ export class PlaygroundComponent {
 	#destroyRef = inject(DestroyRef);
 	#location = inject(Location);
 
-	allUsers = this.#service.allUsers();
+	allUsers = this.#service.getAllUsers();
 	userResource = this.#service.getUserResource();
-	userCompany = this.#service.getUserCountry();
+	userCompany = this.#service.getUserCOmpany();
 	relatedUsers = this.#service.getRelatedUsers();
 
 	selectedId = linkedSignal(() => this.id());
+
+	windowSize = toSignal(
+		fromEvent(window, 'resize').pipe(
+			debounceTime(100),
+			map(() => window.innerWidth),
+		),
+		{ initialValue: window.innerWidth },
+	);
 
 	updateUrl(id: number) {
 		this.selectedId.set(id);

@@ -1,11 +1,4 @@
-import {
-	ChangeDetectionStrategy,
-	Component,
-	computed,
-	input,
-	ResourceRef,
-	signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, Resource } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoadingSpinnerComponent } from '../loading/loading.component';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,7 +25,7 @@ const ERROR_MESSAGES: { [key: number]: string } = {
 })
 export class TileComponent {
 	title = input<string>();
-	resource = input.required<ResourceRef<unknown>>();
+	resource = input.required<Resource<unknown>>();
 
 	errorMessage = computed(() => {
 		const error = this.resource()?.error() as any;
