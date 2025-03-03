@@ -2,6 +2,7 @@ import { afterNextRender, Component, computed, inject, input } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { SandboxService } from '../sandbox.service';
 import { TileComponent } from '@techflash/shared-ui';
+import { RouterLink } from '@angular/router';
 
 export type Company = {
 	id: number;
@@ -13,7 +14,7 @@ export type Company = {
 };
 
 @Component({
-	imports: [CommonModule, TileComponent],
+	imports: [CommonModule, TileComponent, RouterLink],
 	templateUrl: './country.component.html',
 	styleUrl: './country.component.scss',
 	host: {

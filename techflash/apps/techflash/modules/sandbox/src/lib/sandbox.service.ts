@@ -82,6 +82,8 @@ export class SandboxService {
 	updateUserById = async (user: User): Promise<void> => {
 		await firstValueFrom(this.http.put(`/api/users/${user.id}`, user));
 
+		this.#companyByCountry.reload();
+		this.#usersByCountry.reload();
 		this.#userById.reload();
 	};
 
