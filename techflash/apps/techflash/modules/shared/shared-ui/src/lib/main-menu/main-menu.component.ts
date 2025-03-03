@@ -37,6 +37,9 @@ const LINKS = [
 	{ label: 'Sandbox', route: '/sandbox', icon: 'sports_esports' },
 ] as const;
 
+const delay = 3000;
+const animDuration = 1000;
+
 @Component({
 	selector: 'tech-main-menu',
 	imports: [CommonModule, RouterLink, MatIconModule],
@@ -90,16 +93,18 @@ const LINKS = [
 
       .anim {
         // transition:3000ms cubic-bezier(0.05, 1.78, 0.41, 1);
-        transition: 600ms ease;
+        transition: ${animDuration}ms ease;
        }
 
       .show {
         &-out{
             opacity:0;
+            transform:scale(0.7);
           filter: blur(10px);
         }
         &-in{
             opacity:1;
+            transform:scale(1);
           filter: blur(0);
         }
 
@@ -112,7 +117,7 @@ const LINKS = [
 export class MainMenuComponent {
 	links = LINKS;
 
-	intervalSignal = toSignal(interval(3000));
+	intervalSignal = toSignal(interval(delay));
 
 	isHelloHidden = signal(false);
 
@@ -124,7 +129,7 @@ export class MainMenuComponent {
 
 			setTimeout(() => {
 				this.isHelloHidden.set(true);
-			}, 2400);
+			}, delay - animDuration);
 		});
 
 		return getRadomGreeting();

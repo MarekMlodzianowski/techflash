@@ -13,9 +13,18 @@ type Country = {
 };
 
 type ReladedUsersResponse = {
-	country: Country;
+	company: string;
 	users: User[];
 	userCount: number;
+};
+
+export type Company = {
+	id: number;
+	name: string;
+	countryCode: string;
+	address: string;
+	website: string;
+	stockCode: string;
 };
 
 @Injectable({
@@ -32,7 +41,7 @@ export class SandboxService {
 		return (
 			this.#allUsers.isLoading() ||
 			this.#userById.isLoading() ||
-			this.#userCountry.isLoading() ||
+			this.#userCompany.isLoading() ||
 			this.#relatedUsers.isLoading()
 		);
 	});
@@ -46,15 +55,15 @@ export class SandboxService {
 		loader: ({ request: name }) => this.http.get<User>(`/api/users/${name}`),
 	});
 
-	#userCountry = rxResource({
-		request: () => (this.#user()?.country ? this.#user()?.country : undefined),
-		loader: ({ request: countryName }) => this.http.get<Country>(`/api/countries/${countryName}`),
+	#userCompany = rxResource({
+		request: () => (this.#user()?.companyId ? this.#user()?.companyId : undefined),
+		loader: ({ request: companyId }) => this.http.get<Company>(`/api/companies/${companyId}`),
 	});
 
 	#relatedUsers = rxResource({
-		request: () => this.#userCountry.value()?.code,
-		loader: ({ request: countryCode }) =>
-			this.http.get<ReladedUsersResponse>(`/api/users/byCountry/${countryCode}`).pipe(
+		request: () => this.#user()?.companyId,
+		loader: ({ request: companyId }) =>
+			this.http.get<ReladedUsersResponse>(`/api/users/byCompany/${companyId}`).pipe(
 				map((response) => {
 					return {
 						...response,
@@ -72,7 +81,7 @@ export class SandboxService {
 
 	getUserResource = () => this.#userById;
 
-	getUserCountry = () => this.#userCountry;
+	getUserCountry = () => this.#userCompany;
 
 	getRelatedUsers = () => this.#relatedUsers;
 

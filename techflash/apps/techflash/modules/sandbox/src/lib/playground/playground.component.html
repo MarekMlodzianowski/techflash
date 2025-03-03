@@ -15,7 +15,7 @@
 </div>
 
 @if(selectedId()){
-<div class="flex col gap-8">
+<div class="flex col gap-16">
 	<tech-tile
 		title="User"
 		[resource]="userResource"
@@ -51,28 +51,32 @@
 	</tech-tile>
 
 	<tech-tile
-		title="Country"
-		[resource]="userCountry"
+		title="Company"
+		[resource]="userCompany"
 	>
-		@let userCountryVal = userCountry.value();
+		@let userCompanyVal = userCompany.value();
 		<div class="grid gap-4 col-3">
 			<div class="flex col gap-4">
 				<span class="font-xs">Name:</span>
-				<a>{{ userCountryVal?.name ?? '...' }}</a>
+				<a>{{ userCompanyVal?.name ?? '...' }}</a>
 			</div>
 			<div class="flex col gap-4">
-				<span class="font-xs">Code:</span>
+				<span class="font-xs">stockCode:</span>
 				<button class="link">
-					{{ userCountryVal?.code || '...' }}
+					{{ userCompanyVal?.stockCode || '...' }}
 				</button>
 			</div>
 			<div class="flex col gap-4">
-				<span class="font-xs">Capital:</span>
-				<a>{{ userCountryVal?.capital || '...' }}</a>
+				<span class="font-xs">website:</span>
+				<a>{{ userCompanyVal?.website ?? '...' }}</a>
 			</div>
 			<div class="flex col gap-4">
-				<span class="font-xs">Population:</span>
-				<a>{{ (userCountryVal?.population | number : '1.0') ?? '...' }}</a>
+				<span class="font-xs">address:</span>
+				<a>{{ userCompanyVal?.address || '...' }}</a>
+			</div>
+			<div class="flex col gap-4">
+				<span class="font-xs">country Code:</span>
+				<a>{{ userCompanyVal?.countryCode ?? '...' }}</a>
 			</div>
 		</div>
 	</tech-tile>
@@ -83,10 +87,12 @@
 		[title]="'Related users'"
 		[resource]="relatedUsers"
 	>
-		<div class="grid gap-4 col-3">
+		<div class="grid gap-6 col-3 related-users">
+			<span class="font-xs">Name:</span>
+			<span class="font-xs">Email:</span>
+			<span class="font-xs">Phone:</span>
 			@for(user of relatedUsersValue?.users; track $index){
 			<div class="flex col gap-4">
-				<span class="font-xs">Name:</span>
 				<button
 					class="link"
 					(click)="updateUrl(user.id)"
@@ -95,11 +101,9 @@
 				</button>
 			</div>
 			<div class="flex col gap-4">
-				<span class="font-xs">Email:</span>
 				<span>{{ user.email }}</span>
 			</div>
 			<div class="flex col gap-4">
-				<span class="font-xs">Phone:</span>
 				<span>{{ user.phone }}</span>
 			</div>
 

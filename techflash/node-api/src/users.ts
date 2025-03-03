@@ -1,3 +1,5 @@
+import { Company, companies } from './companies';
+
 export type User = {
 	id: number;
 	name: string;
@@ -6,7 +8,7 @@ export type User = {
 	city: string;
 	phone: string;
 	website: string;
-	company: string;
+	companyId: number; // Changed from string to number reference
 	address: string;
 };
 
@@ -19,7 +21,7 @@ export const users: User[] = [
 		city: 'New York',
 		phone: '555-1234',
 		website: 'johndoe.com',
-		company: 'Doe Inc.',
+		companyId: 1, // TechVision Global
 		address: '123 Main St, New York, NY 10001',
 	},
 	{
@@ -30,7 +32,7 @@ export const users: User[] = [
 		city: 'Toronto',
 		phone: '555-5678',
 		website: 'janesmith.com',
-		company: 'Smith LLC',
+		companyId: 8, // Maple Systems
 		address: '456 Queen St, Toronto, ON M5H 2N2',
 	},
 	{
@@ -41,7 +43,7 @@ export const users: User[] = [
 		city: 'Sydney',
 		phone: '555-9876',
 		website: 'alicejohnson.com',
-		company: 'Johnson Pty Ltd',
+		companyId: 6, // Oceanic Dynamics
 		address: '789 King St, Sydney, NSW 2000',
 	},
 	{
@@ -52,7 +54,7 @@ export const users: User[] = [
 		city: 'London',
 		phone: '555-8765',
 		website: 'michaelbrown.com',
-		company: 'Brown Ltd.',
+		companyId: 2, // NexGen Solutions
 		address: '789 Baker St, London, NW1 6XE',
 	},
 	{
@@ -63,7 +65,7 @@ export const users: User[] = [
 		city: 'Berlin',
 		phone: '555-4321',
 		website: 'emilydavis.com',
-		company: 'Davis GmbH',
+		companyId: 3, // Quantum Industries
 		address: '123 Alexanderplatz, Berlin, 10178',
 	},
 	{
@@ -74,7 +76,7 @@ export const users: User[] = [
 		city: 'Paris',
 		phone: '555-6789',
 		website: 'davidwilson.com',
-		company: 'Wilson SA',
+		companyId: 1, // TechVision Global
 		address: '456 Champs-Élysées, Paris, 75008',
 	},
 	{
@@ -85,7 +87,7 @@ export const users: User[] = [
 		city: 'Madrid',
 		phone: '555-9876',
 		website: 'sophiamartinez.com',
-		company: 'Martinez SL',
+		companyId: 10, // Solar Dynamics
 		address: '789 Gran Via, Madrid, 28013',
 	},
 	{
@@ -96,7 +98,7 @@ export const users: User[] = [
 		city: 'Rome',
 		phone: '555-5432',
 		website: 'jamesanderson.com',
-		company: 'Anderson SRL',
+		companyId: 2, // NexGen Solutions
 		address: '123 Via Veneto, Rome, 00187',
 	},
 	{
@@ -107,7 +109,7 @@ export const users: User[] = [
 		city: 'Amsterdam',
 		phone: '555-6789',
 		website: 'oliviathomas.com',
-		company: 'Thomas BV',
+		companyId: 5, // Alpine Software Group
 		address: '456 Dam Square, Amsterdam, 1012',
 	},
 	{
@@ -118,7 +120,7 @@ export const users: User[] = [
 		city: 'Stockholm',
 		phone: '555-8765',
 		website: 'williamjackson.com',
-		company: 'Jackson AB',
+		companyId: 7, // Nordic Innovations
 		address: '789 Drottninggatan, Stockholm, 111 60',
 	},
 	{
@@ -129,7 +131,7 @@ export const users: User[] = [
 		city: 'Oslo',
 		phone: '555-4321',
 		website: 'isabellawhite.com',
-		company: 'White AS',
+		companyId: 7, // Nordic Innovations
 		address: '123 Karl Johans gate, Oslo, 0154',
 	},
 	{
@@ -140,7 +142,7 @@ export const users: User[] = [
 		city: 'Copenhagen',
 		phone: '555-6789',
 		website: 'alexanderharris.com',
-		company: 'Harris ApS',
+		companyId: 4, // BlueWave Technologies
 		address: '456 Strøget, Copenhagen, 1116',
 	},
 	{
@@ -151,7 +153,7 @@ export const users: User[] = [
 		city: 'Helsinki',
 		phone: '555-9876',
 		website: 'miaclark.com',
-		company: 'Clark Oy',
+		companyId: 9, // Arctic Solutions
 		address: '789 Mannerheimintie, Helsinki, 00100',
 	},
 	{
@@ -162,7 +164,7 @@ export const users: User[] = [
 		city: 'Los Angeles',
 		phone: '555-1235',
 		website: 'liamjohnson.com',
-		company: 'Johnson & Co.',
+		companyId: 1, // TechVision Global
 		address: '456 Sunset Blvd, Los Angeles, CA 90028',
 	},
 	{
@@ -173,7 +175,7 @@ export const users: User[] = [
 		city: 'Vancouver',
 		phone: '555-5679',
 		website: 'emmabrown.com',
-		company: 'Brown Enterprises',
+		companyId: 8, // Maple Systems
 		address: '789 Granville St, Vancouver, BC V6Z 1K7',
 	},
 	{
@@ -184,7 +186,7 @@ export const users: User[] = [
 		city: 'Manchester',
 		phone: '555-8766',
 		website: 'noahdavis.com',
-		company: 'Davis Corp.',
+		companyId: 2, // NexGen Solutions
 		address: '123 Deansgate, Manchester, M3 4FN',
 	},
 	{
@@ -195,7 +197,7 @@ export const users: User[] = [
 		city: 'Munich',
 		phone: '555-4322',
 		website: 'avawilson.com',
-		company: 'Wilson AG',
+		companyId: 3, // Quantum Industries
 		address: '456 Marienplatz, Munich, 80331',
 	},
 	{
@@ -206,7 +208,7 @@ export const users: User[] = [
 		city: 'Lyon',
 		phone: '555-6790',
 		website: 'olivermartinez.com',
-		company: 'Martinez SARL',
+		companyId: 1, // TechVision Global
 		address: '789 Rue de la République, Lyon, 69002',
 	},
 	{
@@ -217,7 +219,7 @@ export const users: User[] = [
 		city: 'Barcelona',
 		phone: '555-9877',
 		website: 'sophiaanderson.com',
-		company: 'Anderson SL',
+		companyId: 10, // Solar Dynamics
 		address: '123 La Rambla, Barcelona, 08002',
 	},
 	{
@@ -228,7 +230,7 @@ export const users: User[] = [
 		city: 'Milan',
 		phone: '555-5433',
 		website: 'jamesthomas.com',
-		company: 'Thomas SRL',
+		companyId: 2, // NexGen Solutions
 		address: '456 Via Montenapoleone, Milan, 20121',
 	},
 	{
@@ -239,7 +241,7 @@ export const users: User[] = [
 		city: 'Rotterdam',
 		phone: '555-6791',
 		website: 'isabellajackson.com',
-		company: 'Jackson BV',
+		companyId: 5, // Alpine Software Group
 		address: '789 Coolsingel, Rotterdam, 3012',
 	},
 	{
@@ -250,7 +252,7 @@ export const users: User[] = [
 		city: 'Gothenburg',
 		phone: '555-8767',
 		website: 'williamwhite.com',
-		company: 'White AB',
+		companyId: 7, // Nordic Innovations
 		address: '123 Avenyn, Gothenburg, 411 36',
 	},
 	{
@@ -261,7 +263,7 @@ export const users: User[] = [
 		city: 'Bergen',
 		phone: '555-4323',
 		website: 'miaharris.com',
-		company: 'Harris AS',
+		companyId: 7, // Nordic Innovations
 		address: '456 Bryggen, Bergen, 5003',
 	},
 	{
@@ -272,7 +274,7 @@ export const users: User[] = [
 		city: 'Aarhus',
 		phone: '555-6792',
 		website: 'alexanderclark.com',
-		company: 'Clark ApS',
+		companyId: 4, // BlueWave Technologies
 		address: '789 Store Torv, Aarhus, 8000',
 	},
 	{
@@ -283,7 +285,7 @@ export const users: User[] = [
 		city: 'Tampere',
 		phone: '555-9878',
 		website: 'emilylewis.com',
-		company: 'Lewis Oy',
+		companyId: 9, // Arctic Solutions
 		address: '123 Hämeenkatu, Tampere, 33100',
 	},
 	{
@@ -294,7 +296,7 @@ export const users: User[] = [
 		city: 'Chicago',
 		phone: '555-1236',
 		website: 'benjaminwalker.com',
-		company: 'Walker Inc.',
+		companyId: 1, // TechVision Global
 		address: '456 Michigan Ave, Chicago, IL 60611',
 	},
 	{
@@ -305,7 +307,7 @@ export const users: User[] = [
 		city: 'Montreal',
 		phone: '555-5680',
 		website: 'charlottehall.com',
-		company: 'Hall Enterprises',
+		companyId: 8, // Maple Systems
 		address: '789 Saint-Catherine St, Montreal, QC H3B 1B5',
 	},
 	{
@@ -316,7 +318,7 @@ export const users: User[] = [
 		city: 'Birmingham',
 		phone: '555-8768',
 		website: 'henryyoung.com',
-		company: 'Young Ltd.',
+		companyId: 2, // NexGen Solutions
 		address: '123 New St, Birmingham, B2 4QA',
 	},
 	{
@@ -327,7 +329,7 @@ export const users: User[] = [
 		city: 'Hamburg',
 		phone: '555-4324',
 		website: 'ameliaking.com',
-		company: 'King GmbH',
+		companyId: 3, // Quantum Industries
 		address: '456 Jungfernstieg, Hamburg, 20354',
 	},
 	{
@@ -338,7 +340,7 @@ export const users: User[] = [
 		city: 'Marseille',
 		phone: '555-6793',
 		website: 'lucaswright.com',
-		company: 'Wright SA',
+		companyId: 1, // TechVision Global
 		address: '789 La Canebière, Marseille, 13001',
 	},
 	{
@@ -349,7 +351,7 @@ export const users: User[] = [
 		city: 'Valencia',
 		phone: '555-9879',
 		website: 'harperscott.com',
-		company: 'Scott SL',
+		companyId: 10, // Solar Dynamics
 		address: '123 Plaza del Ayuntamiento, Valencia, 46002',
 	},
 	{
@@ -360,7 +362,7 @@ export const users: User[] = [
 		city: 'Naples',
 		phone: '555-5434',
 		website: 'ethangreen.com',
-		company: 'Green SRL',
+		companyId: 2, // NexGen Solutions
 		address: '456 Via Toledo, Naples, 80134',
 	},
 	{
@@ -371,7 +373,7 @@ export const users: User[] = [
 		city: 'Utrecht',
 		phone: '555-6794',
 		website: 'abigailadams.com',
-		company: 'Adams BV',
+		companyId: 5, // Alpine Software Group
 		address: '789 Oudegracht, Utrecht, 3511',
 	},
 	{
@@ -382,7 +384,7 @@ export const users: User[] = [
 		city: 'Malmo',
 		phone: '555-8769',
 		website: 'danielbaker.com',
-		company: 'Baker AB',
+		companyId: 7, // Nordic Innovations
 		address: '123 Lilla Torg, Malmo, 211 34',
 	},
 	{
@@ -393,7 +395,7 @@ export const users: User[] = [
 		city: 'Stavanger',
 		phone: '555-4325',
 		website: 'ellanelson.com',
-		company: 'Nelson AS',
+		companyId: 7, // Nordic Innovations
 		address: '456 Øvre Holmegate, Stavanger, 4006',
 	},
 	{
@@ -404,7 +406,7 @@ export const users: User[] = [
 		city: 'Odense',
 		phone: '555-6795',
 		website: 'matthewcarter.com',
-		company: 'Carter ApS',
+		companyId: 4, // BlueWave Technologies
 		address: '789 Vestergade, Odense, 5000',
 	},
 	{
@@ -415,9 +417,16 @@ export const users: User[] = [
 		city: 'Espoo',
 		phone: '555-9880',
 		website: 'averymitchell.com',
-		company: 'Mitchell Oy',
+		companyId: 7, // Nordic Innovations
 		address: '123 Leppävaarankatu, Espoo, 02600',
 	},
 ];
+
+// Helper function to get company details for a user
+export const getUserCompany = (userId: number): Company | undefined => {
+	const user = users.find((u) => u.id === userId);
+	if (!user) return undefined;
+	return companies.find((c) => c.id === user.companyId);
+};
 
 export default users;

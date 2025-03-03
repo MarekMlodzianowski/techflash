@@ -27,7 +27,8 @@ export type User = {
 	city: string;
 	phone: string;
 	website: string;
-	company: string;
+	company?: string;
+	companyId: number;
 	address: string;
 };
 
@@ -53,8 +54,7 @@ export type User = {
    border:solid 1px var(--color-slate);
   .title {
          margin:0;
-    }
-  }
+  }}
     `,
 })
 export class PlaygroundComponent {
@@ -66,7 +66,7 @@ export class PlaygroundComponent {
 
 	allUsers = this.#service.allUsers();
 	userResource = this.#service.getUserResource();
-	userCountry = this.#service.getUserCountry();
+	userCompany = this.#service.getUserCountry();
 	relatedUsers = this.#service.getRelatedUsers();
 
 	selectedId = linkedSignal(() => this.id());

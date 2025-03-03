@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 
-import { users } from './users';
+import { getUserCompany, users } from './users';
 import { countries } from './countries';
 
 // Configuration
@@ -60,7 +60,59 @@ app.get('/api/users/:id', async (req: Request, res: Response, next: NextFunction
 			return res.status(404).json({ message: 'User not found' });
 		}
 
-		res.json(user);
+		res.json({
+			...user,
+			company: getUserCompany(user.id)?.name ?? '-',
+		});
+	} catch (error) {
+		next(error);
+	}
+});
+//get users by company
+app.get(
+	'/api/users/byCompany/:companyId',
+	async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const companyId = Number(req.params.companyId);
+
+			if (isNaN(companyId)) {
+				return res.status(400).json({ message: 'Invalid company ID format' });
+			}
+
+			const usersByCompany = users.filter((user) => getUserCompany(user.id)?.id === companyId);
+			await simulateDelay(100);
+
+			if (usersByCompany.length === 0) {
+				return res.status(404).json({ message: 'No users found for this company' });
+			}
+
+			res.json({
+				company: getUserCompany(companyId)?.name ?? '-',
+				userCount: usersByCompany.length,
+				users: usersByCompany,
+			});
+		} catch (error) {
+			next(error);
+		}
+	},
+);
+
+app.get('/api/companies/:id', async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const id = Number(req.params.id);
+
+		if (isNaN(id)) {
+			return res.status(400).json({ message: 'Invalid company ID format' });
+		}
+
+		const company = getUserCompany(id);
+		await simulateDelay();
+
+		if (!company) {
+			return res.status(404).json({ message: 'Company not found' });
+		}
+
+		res.json(company);
 	} catch (error) {
 		next(error);
 	}
