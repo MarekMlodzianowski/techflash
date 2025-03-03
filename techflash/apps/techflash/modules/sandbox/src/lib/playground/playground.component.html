@@ -28,7 +28,16 @@
 		>
 			<div class="flex col gap-4">
 				<span class="font-xs">Name:</span>
-				<span>{{ userValue?.name }}</span>
+				<button
+					class="link flex a-center gap-4"
+					(click)="openDialog()"
+				>
+					<span> {{ userValue?.name }}</span>
+					<mat-icon
+						class="font-xs"
+						[fontIcon]="'edit'"
+					/>
+				</button>
 			</div>
 			<div class="flex col gap-4">
 				<span class="font-xs">Email:</span>
@@ -125,3 +134,89 @@
 	</tech-tile>
 </div>
 }
+
+<ng-template #formDialog>
+	<mat-dialog-content>
+		<form [formGroup]="userForm">
+			<div class="flex col gap-12">
+				<div class="flex col gap-4">
+					<mat-form-field>
+						<mat-label>Name</mat-label>
+						<input
+							matInput
+							formControlName="name"
+						/>
+					</mat-form-field>
+				</div>
+				<div class="flex col gap-4">
+					<mat-form-field>
+						<mat-label>Email</mat-label>
+						<input
+							matInput
+							formControlName="email"
+						/>
+					</mat-form-field>
+				</div>
+				<div class="flex col gap-4">
+					<mat-form-field>
+						<mat-label>Phone</mat-label>
+						<input
+							matInput
+							formControlName="phone"
+						/>
+					</mat-form-field>
+				</div>
+				<div class="flex col gap-4">
+					<mat-form-field>
+						<mat-label>Website</mat-label>
+						<input
+							matInput
+							formControlName="website"
+						/>
+					</mat-form-field>
+				</div>
+				<div class="flex col gap-4">
+					<mat-form-field>
+						<mat-label>Company id</mat-label>
+						<input
+							matInput
+							formControlName="companyId"
+						/>
+					</mat-form-field>
+				</div>
+				<div class="flex col gap-4">
+					<mat-form-field>
+						<mat-label>Address</mat-label>
+						<input
+							matInput
+							formControlName="address"
+						/>
+					</mat-form-field>
+				</div>
+				<div class="flex col gap-4">
+					<mat-form-field>
+						<mat-label>Country</mat-label>
+						<input
+							matInput
+							formControlName="country"
+						/>
+					</mat-form-field>
+				</div>
+			</div>
+		</form>
+	</mat-dialog-content>
+	<mat-dialog-actions>
+		<button
+			mat-button
+			matDialogClose
+		>
+			Cancel
+		</button>
+		<button
+			mat-button
+			(click)="dialogSave(userForm.value)"
+		>
+			Save
+		</button>
+	</mat-dialog-actions>
+</ng-template>

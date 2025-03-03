@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 
-import { getUserCompany, users } from './users';
+import { getUserCompany, User, users } from './users';
 import { countries } from './countries';
 import companies from './companies';
 
@@ -41,6 +41,33 @@ app.get('/api/users/all', async (_req: Request, res: Response, next: NextFunctio
 
 		await simulateDelay();
 		res.json(ids);
+	} catch (error) {
+		next(error);
+	}
+});
+
+app.put('/api/users/:id', async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const id = Number(req.params.id);
+
+		if (isNaN(id)) {
+			return res.status(400).json({ message: 'Invalid user ID format' });
+		}
+
+		const user = users.find((user) => user.id === id);
+		await simulateDelay();
+
+		if (!user) {
+			return res.status(404).json({ message: 'User not found' });
+		}
+
+		Object.entries(req.body).forEach(([key, value]) => {
+			if (key in user) {
+				user[key] = value;
+			}
+		});
+
+		res.json({ message: 'User name updated successfully', user });
 	} catch (error) {
 		next(error);
 	}

@@ -98,7 +98,17 @@ ul {
 }
 
 .slide-down {
-	transition: 500ms allow-discrete;
+	transition: 500ms ease;
+
+	@for $i from 1 through 12 {
+		&:nth-child(#{$i}) {
+			transition-delay: #{$i * 150}ms;
+		}
+	}
+}
+
+.hidden {
+	display: none;
 }
 
 .flex {

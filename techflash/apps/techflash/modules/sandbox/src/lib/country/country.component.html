@@ -1,5 +1,9 @@
 <p class="font-xl">{{ country.value()?.name }}</p>
 
+@if(country.hasValue() === false && country.isLoading() === false) {
+<div class="tile glass">🙉 Country not found</div>
+}
+
 <tech-tile
 	[title]="'Country'"
 	[resource]="country"
@@ -45,6 +49,7 @@
 		} @empty { Nothing to show }
 	</div>
 </tech-tile>
+
 <tech-tile
 	[title]="'Users'"
 	[resource]="users"

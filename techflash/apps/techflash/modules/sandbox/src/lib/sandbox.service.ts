@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { interval, map } from 'rxjs';
+import { firstValueFrom, interval, map } from 'rxjs';
 import { User } from './playground/playground.component';
 import { HttpClient } from '@angular/common/http';
 
@@ -79,6 +79,12 @@ export class SandboxService {
 		loader: ({ request: name }) => this.http.get<User>(`/api/users/${name}`),
 	});
 
+	updateUserById = async (user: User): Promise<void> => {
+		await firstValueFrom(this.http.put(`/api/users/${user.id}`, user));
+
+		this.#userById.reload();
+	};
+
 	#userCompany = rxResource({
 		request: () => (this.#user()?.companyId ? this.#user()?.companyId : undefined),
 		loader: ({ request: companyId }) => this.http.get<Company>(`/api/companies/${companyId}`),
@@ -118,7 +124,6 @@ export class SandboxService {
 			setTimeout(() => {
 				this.#pendingRequests.set(this.#pendingRequests().filter((r) => r !== request));
 			}, 1000);
-
 			return;
 		}
 

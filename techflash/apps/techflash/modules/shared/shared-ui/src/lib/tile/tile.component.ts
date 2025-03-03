@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input, Resource } from '@
 import { CommonModule } from '@angular/common';
 import { LoadingSpinnerComponent } from '../loading/loading.component';
 import { MatIconModule } from '@angular/material/icon';
+import { style } from '@angular/animations';
 
 // common http error codes and messages
 
@@ -18,6 +19,7 @@ const ERROR_MESSAGES: { [key: number]: string } = {
 	imports: [CommonModule, LoadingSpinnerComponent, MatIconModule],
 	host: {
 		class: 'slide-down',
+		'[class.hidden]': 'resource().hasValue() === false',
 	},
 	templateUrl: './tile.component.html',
 	styleUrl: './tile.component.scss',
