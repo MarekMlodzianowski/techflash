@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 
 import { getUserCompany, users } from './users';
 import { countries } from './countries';
+import companies from './companies';
 
 // Configuration
 const host = process.env.HOST ?? 'localhost';
@@ -136,14 +137,17 @@ app.get(
 				return res.status(404).json({ message: 'Country not found' });
 			}
 
-			const usersByCountry = users.filter((user) => user.country === country.name);
+			const usersByCountry = users
+				.filter((user) => user.country === country.name)
+				.map((user) => {
+					return {
+						...user,
+						company: getUserCompany(user.id)?.name ?? '-',
+					};
+				});
 			await simulateDelay(100);
 
-			res.json({
-				country: country.name,
-				userCount: usersByCountry.length,
-				users: usersByCountry,
-			});
+			res.json(usersByCountry);
 		} catch (error) {
 			console.log(error);
 			next(error);
@@ -155,6 +159,57 @@ app.get(
 app.get('/api/countries', (_req: Request, res: Response) => {
 	res.json(countries);
 });
+
+app.get('/api/countries/code/:code', async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const code = req.params.code.toUpperCase();
+
+		if (!code || code.length !== 2) {
+			return res.status(400).json({ message: 'Invalid country code format' });
+		}
+
+		const country = countries.find((country) => country.code.toUpperCase() === code);
+
+		await simulateDelay(200);
+
+		if (!country) {
+			return res.status(404).json({ message: 'Country not found' });
+		}
+
+		res.json(country);
+	} catch (error) {
+		next(error);
+	}
+});
+
+app.get(
+	'/api/companies/byCountry/:countryCode',
+	async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const countryCode = req.params.countryCode as string;
+
+			if (!countryCode || countryCode.length !== 2) {
+				return res.status(400).json({ message: 'Invalid country code format' });
+			}
+
+			const country = countries.find(
+				(country) => country.code.toLowerCase() === countryCode.toLowerCase(),
+			);
+
+			if (!country) {
+				return res.status(404).json({ message: 'Country not found' });
+			}
+
+			const companiesByCountry = companies.filter((item) => item.countryCode === countryCode);
+
+			await simulateDelay(100);
+
+			res.json(companiesByCountry);
+		} catch (error) {
+			next(error);
+		}
+	},
+);
 
 app.get('/api/countries/:name', async (req: Request, res: Response, next: NextFunction) => {
 	try {

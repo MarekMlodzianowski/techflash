@@ -1,0 +1,69 @@
+<p class="font-xl">{{ country.value()?.name }}</p>
+
+<tech-tile
+	[title]="'Country'"
+	[resource]="country"
+>
+	<div class="grid col-4 gap-4">
+		@let countryVal = country.value();
+
+		<div class="flex col gap-4">
+			<span class="font-xs">Name:</span>
+			<span>{{ countryVal?.name }}</span>
+		</div>
+		<div class="flex col gap-4">
+			<span class="font-xs">Code:</span>
+			<span>{{ countryVal?.code }}</span>
+		</div>
+		<div class="flex col gap-4">
+			<span class="font-xs">Capital:</span>
+			<span>{{ countryVal?.capital }}</span>
+		</div>
+		<div class="flex col gap-4">
+			<span class="font-xs">Population:</span>
+			<span>{{ countryVal?.population | number : '0.0' }}</span>
+		</div>
+	</div>
+</tech-tile>
+
+<tech-tile
+	[title]="'Companies'"
+	[resource]="companies"
+>
+	<div class="grid col-3 gap-4">
+		<span class="font-xs">Name:</span>
+		<span class="font-xs">Website:</span>
+		<span class="font-xs">Address:</span>
+
+		@for (item of companies.value() ?? []; track $index) {
+		<span>
+			<span> {{ item.name }}</span> <br /><code class="font-xs">{{ item.stockCode }}</code>
+		</span>
+		<a>{{ item.website }}</a>
+		<span>{{ item.address }}</span>
+
+		} @empty { Nothing to show }
+	</div>
+</tech-tile>
+<tech-tile
+	[title]="'Users'"
+	[resource]="users"
+>
+	<div class="grid col-3 gap-4">
+		<span class="font-xs">Name:</span>
+		<span class="font-xs">Email:</span>
+		<span class="font-xs">Company:</span>
+
+		@for (user of users.value() ?? []; track $index) {
+		<div class="flex col gap-4">
+			<span>{{ user.name }}</span>
+		</div>
+		<div class="flex col gap-4">
+			<span>{{ user.email }}</span>
+		</div>
+		<div class="flex col gap-4">
+			<span>{{ user.company }}</span>
+		</div>
+		} @empty { No users available }
+	</div>
+</tech-tile>

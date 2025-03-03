@@ -164,7 +164,7 @@ export const users: User[] = [
 		city: 'Los Angeles',
 		phone: '555-1235',
 		website: 'liamjohnson.com',
-		companyId: 1, // TechVision Global
+		companyId: 5, // TechVision Global
 		address: '456 Sunset Blvd, Los Angeles, CA 90028',
 	},
 	{

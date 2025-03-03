@@ -82,7 +82,9 @@
 			</div>
 			<div class="flex col gap-4">
 				<span class="font-xs">country Code:</span>
-				<a>{{ userCompanyVal?.countryCode ?? '...' }}</a>
+				<a [routerLink]="['/sandbox/country/' + userCompanyVal?.countryCode]">{{
+					userCompanyVal?.countryCode ?? '...'
+				}}</a>
 			</div>
 		</div>
 	</tech-tile>

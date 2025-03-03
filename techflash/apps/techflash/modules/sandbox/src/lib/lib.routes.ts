@@ -23,6 +23,10 @@ export const sandboxRoutes: Route[] = [
 				loadComponent: () =>
 					import('./playground/playground.component').then((m) => m.PlaygroundComponent),
 			},
+			{
+				path: 'country/:countryCode',
+				loadComponent: () => import('./country/country.component').then((m) => m.CountryComponent),
+			},
 		],
 	},
 ];

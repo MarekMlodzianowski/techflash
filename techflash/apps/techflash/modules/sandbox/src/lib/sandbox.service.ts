@@ -41,6 +41,35 @@ export class SandboxService {
 
 	#isFetching = computed(() => this.#pendingRequests().length > 0);
 
+	// Countries #######################
+
+	#countryCode = signal('');
+
+	#countryByCode = rxResource({
+		request: () => (this.#countryCode() ? this.#countryCode() : undefined),
+		loader: ({ request: countryCode }) =>
+			this.http.get<Country>(`/api/countries/code/${countryCode}`),
+	});
+
+	#companyByCountry = rxResource({
+		request: () => (this.#countryCode() ? this.#countryCode() : undefined),
+		loader: ({ request: countryCode }) =>
+			this.http.get<Company[]>(`/api/companies/byCountry/${countryCode}`),
+	});
+
+	#usersByCountry = rxResource({
+		request: () => (this.#countryCode() ? this.#countryCode() : undefined),
+		loader: ({ request: countryCode }) =>
+			this.http.get<User[]>(`/api/users/byCountry/${countryCode}`),
+	});
+
+	setCountryCode = (value: string) => this.#countryCode.set(value);
+
+	getCountryByCode = () => this.#countryByCode.asReadonly();
+	getCompaniesByCountry = () => this.#companyByCountry.asReadonly();
+
+	// USERS ###########################
+
 	#allUsers = rxResource({
 		loader: () => this.http.get<User[]>(`/api/users/all`),
 	});
@@ -69,6 +98,8 @@ export class SandboxService {
 	});
 
 	countryResource = toSignal(this.http.get<Country[]>(`/api/countries`), { initialValue: [] });
+
+	getUsersByCountry = () => this.#usersByCountry.asReadonly();
 
 	setId = (value: number) => this.#id.set(value);
 

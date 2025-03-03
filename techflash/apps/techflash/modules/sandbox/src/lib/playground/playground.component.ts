@@ -6,7 +6,6 @@ import {
 	input,
 	linkedSignal,
 	numberAttribute,
-	signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SandboxService } from '../sandbox.service';
