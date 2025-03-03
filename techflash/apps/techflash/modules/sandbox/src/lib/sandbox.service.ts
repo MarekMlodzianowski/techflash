@@ -1,52 +1,80 @@
-import { computed, Injectable, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { interval } from 'rxjs';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { interval, map } from 'rxjs';
+import { User } from './playground/playground.component';
+import { HttpClient } from '@angular/common/http';
 
-const greetings = [
-	'Hello',
-	'Hola',
-	'こんにちは',
-	'안녕하세요',
-	'你好',
-	'Olá',
-	'Привет',
-	'مرحبا',
-	'Bonjour',
-	'Ciao',
-	'Hallo',
-	'Hej',
-	'Aloha',
-	'Namaste',
-	'Salaam',
-	'Konnichiwa',
-	'Shalom',
-	'Merhaba',
-	'Jambo',
-] as const;
+type Country = {
+	id: number;
+	name: string;
+	code: string;
+	capital: string;
+	population: number;
+};
 
-const getRadomGreeting = () => {
-	const randomIndex = Math.floor(Math.random() * greetings.length);
-	return greetings[randomIndex];
+type ReladedUsersResponse = {
+	country: Country;
+	users: User[];
+	userCount: number;
 };
 
 @Injectable({
 	providedIn: 'root',
 })
 export class SandboxService {
-	#name = signal('');
+	http = inject(HttpClient);
 
-	#randomGreeting = computed(() => {
-		this.#interval();
-		console.log(this.#name());
-		return getRadomGreeting();
+	#id = signal(-1);
+
+	#user = computed(() => this.#userById?.value());
+
+	#isFetching = computed(() => {
+		return (
+			this.#allUsers.isLoading() ||
+			this.#userById.isLoading() ||
+			this.#userCountry.isLoading() ||
+			this.#relatedUsers.isLoading()
+		);
 	});
 
-	#helloWorld = computed(() => `${this.#randomGreeting()} ${this.#name() ?? ''}`);
+	#allUsers = rxResource({
+		loader: () => this.http.get<User[]>(`/api/users/all`),
+	});
 
-	#interval = toSignal(interval(6000));
+	#userById = rxResource({
+		request: () => (this.#id() !== -1 ? this.#id() : undefined),
+		loader: ({ request: name }) => this.http.get<User>(`/api/users/${name}`),
+	});
 
-	getName = () => this.#name.asReadonly();
-	setName = (value: string) => this.#name.set(value);
+	#userCountry = rxResource({
+		request: () => (this.#user()?.country ? this.#user()?.country : undefined),
+		loader: ({ request: countryName }) => this.http.get<Country>(`/api/countries/${countryName}`),
+	});
 
-	getHelloWorld = () => this.#helloWorld;
+	#relatedUsers = rxResource({
+		request: () => this.#userCountry.value()?.code,
+		loader: ({ request: countryCode }) =>
+			this.http.get<ReladedUsersResponse>(`/api/users/byCountry/${countryCode}`).pipe(
+				map((response) => {
+					return {
+						...response,
+						users: response.users.filter((user) => user.id !== this.#user()?.id),
+					};
+				}),
+			),
+	});
+
+	countryResource = toSignal(this.http.get<Country[]>(`/api/countries`), { initialValue: [] });
+
+	setId = (value: number) => this.#id.set(value);
+
+	allUsers = () => this.#allUsers;
+
+	getUserResource = () => this.#userById;
+
+	getUserCountry = () => this.#userCountry;
+
+	getRelatedUsers = () => this.#relatedUsers;
+
+	isFetching = () => this.#isFetching;
 }

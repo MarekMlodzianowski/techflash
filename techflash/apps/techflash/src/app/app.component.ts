@@ -1,23 +1,35 @@
-import { Component, effect, inject, linkedSignal } from '@angular/core';
+import { Component, inject, linkedSignal } from '@angular/core';
 import { RouterModule, Router, EventType } from '@angular/router';
 import { LoadingSpinnerComponent, MainMenuComponent } from '@techflash/shared-ui';
 import { CommonModule } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, tap } from 'rxjs';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { SandboxService } from '@techflash/sandbox';
 
 @Component({
-	imports: [RouterModule, MainMenuComponent, LoadingSpinnerComponent, CommonModule],
+	imports: [
+		RouterModule,
+		MainMenuComponent,
+		LoadingSpinnerComponent,
+		CommonModule,
+		MatProgressBarModule,
+	],
 	selector: 'app-root',
 	host: {
 		class: 'flex column gap-24',
 	},
 	template: `
+		@if(fetching()){
+		<mat-progress-bar mode="query"></mat-progress-bar>
+		}
+
 		<main class="page-container flex column gap-24">
 			<tech-main-menu />
 			<router-outlet></router-outlet>
 		</main>
 
-		@if(loading()){
+		@if(navigationPending()){
 		<tech-loading-spinner
 			[fullscreen]="true"
 			message="Loading..."
@@ -27,6 +39,14 @@ import { debounceTime, tap } from 'rxjs';
 	styles: [
 		`
 			:host {
+				mat-progress-bar {
+					position: fixed;
+					top: 0;
+					left: 0;
+					width: 100%;
+				}
+
+				padding-top: 16px;
 				align-items: center;
 				.page-container {
 					max-width: 800px;
@@ -36,48 +56,26 @@ import { debounceTime, tap } from 'rxjs';
 	],
 })
 export class AppComponent {
-	// inputs
-	// outputs
-	// injectors
-	// properties
-	// signal properties (computed / linked / effect)
-	// methods
-	// ooks
-
+	service = inject(SandboxService);
 	router = inject(Router);
+
+	// fetching =inject(SandboxService).isFetching();
+	fetching = this.service.isFetching();
 
 	title = 'techflash';
 
 	routerEvents = toSignal(
 		this.router.events.pipe(
 			tap((event) => {
-				if (event.type === EventType.NavigationStart) this.loading.set(true);
+				if (event.type === EventType.NavigationStart) this.navigationPending.set(true);
 			}),
 			debounceTime(300),
 		),
 	);
 
-	loading = linkedSignal(() =>
+	navigationPending = linkedSignal(() =>
 		[EventType.NavigationStart, EventType.NavigationCancel, EventType.NavigationError].includes(
 			this.routerEvents()?.type ?? 0,
 		),
 	);
-
-	routerEffect = effect(() => console.log(this.routerEvents()));
-
-	// constructor(private router: Router) {
-	// 	this.router.events.subscribe((event) => {
-	// 		if (event instanceof NavigationStart) {
-	// 			this.loading.set(true);
-	// 		} else if (
-	// 			event instanceof NavigationEnd ||
-	// 			event instanceof NavigationCancel ||
-	// 			event instanceof NavigationError
-	// 		) {
-	// 			setTimeout(() => {
-	// 				this.loading.set(false);
-	// 			}, 2300); // Small delay to prevent flickering for fast loads
-	// 		}
-	// 	});
-	// }
 }

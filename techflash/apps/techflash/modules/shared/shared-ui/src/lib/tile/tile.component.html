@@ -1,0 +1,26 @@
+@let value = resource().value();
+<!--  -->
+@let loading = resource().isLoading();
+
+<div class="tile glass flex col gap-12">
+	@if(title()){
+	<div class="pill">{{ title() }}</div>
+	}
+
+	<!-- external content -->
+	@if(value){
+	<ng-content>Empty tile</ng-content>
+	}
+
+	<!-- spinner -->
+	@if(loading){
+	<tech-loading-spinner />
+	}
+
+	<!-- error log -->
+	@if(errorMessage()){
+	<em class="flex gap-4 a-center font-xs"
+		><mat-icon [fontIcon]="'error'" /> {{ errorMessage() }}</em
+	>
+	}
+</div>

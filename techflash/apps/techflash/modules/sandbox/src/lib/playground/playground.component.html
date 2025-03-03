@@ -1,0 +1,112 @@
+<div class="tile glass">
+	<mat-form-field>
+		<mat-select
+			placeholder="Select ID"
+			[(value)]="selectedId"
+			(valueChange)="updateUrl($event)"
+		>
+			@for (user of allUsers.value(); track $index) {
+			<mat-option [value]="user.id">
+				{{ user.name }}
+			</mat-option>
+			}
+		</mat-select>
+	</mat-form-field>
+</div>
+
+@if(selectedId()){
+<div class="flex col gap-8">
+	<tech-tile
+		title="User"
+		[resource]="userResource"
+	>
+		@let userValue = userResource.value();
+
+		<div class="grid gap-4 col-3">
+			<div class="flex col gap-4">
+				<span class="font-xs">Name:</span>
+				<span>{{ userValue?.name }}</span>
+			</div>
+			<div class="flex col gap-4">
+				<span class="font-xs">Email:</span>
+				<a class="link">{{ userValue?.email }}</a>
+			</div>
+			<div class="flex col gap-4">
+				<span class="font-xs">Phone:</span>
+				<a class="link">{{ userValue?.phone }}</a>
+			</div>
+			<div class="flex col gap-4">
+				<span class="font-xs">Website:</span>
+				<a class="link">{{ userValue?.website }}</a>
+			</div>
+			<div class="flex col gap-4">
+				<span class="font-xs">Company:</span>
+				<span>{{ userValue?.company }}</span>
+			</div>
+			<div class="flex col gap-4">
+				<span class="font-xs">Address:</span>
+				<span>{{ userValue?.address }}, {{ userValue?.country }}</span>
+			</div>
+		</div>
+	</tech-tile>
+
+	<tech-tile
+		title="Country"
+		[resource]="userCountry"
+	>
+		@let userCountryVal = userCountry.value();
+		<div class="grid gap-4 col-3">
+			<div class="flex col gap-4">
+				<span class="font-xs">Name:</span>
+				<a>{{ userCountryVal?.name ?? '...' }}</a>
+			</div>
+			<div class="flex col gap-4">
+				<span class="font-xs">Code:</span>
+				<button class="link">
+					{{ userCountryVal?.code || '...' }}
+				</button>
+			</div>
+			<div class="flex col gap-4">
+				<span class="font-xs">Capital:</span>
+				<a>{{ userCountryVal?.capital || '...' }}</a>
+			</div>
+			<div class="flex col gap-4">
+				<span class="font-xs">Population:</span>
+				<a>{{ (userCountryVal?.population | number : '1.0') ?? '...' }}</a>
+			</div>
+		</div>
+	</tech-tile>
+
+	@let relatedUsersValue = relatedUsers.value();
+
+	<tech-tile
+		[title]="'Related users'"
+		[resource]="relatedUsers"
+	>
+		<div class="grid gap-4 col-3">
+			@for(user of relatedUsersValue?.users; track $index){
+			<div class="flex col gap-4">
+				<span class="font-xs">Name:</span>
+				<button
+					class="link"
+					(click)="updateUrl(user.id)"
+				>
+					{{ user.name }}
+				</button>
+			</div>
+			<div class="flex col gap-4">
+				<span class="font-xs">Email:</span>
+				<span>{{ user.email }}</span>
+			</div>
+			<div class="flex col gap-4">
+				<span class="font-xs">Phone:</span>
+				<span>{{ user.phone }}</span>
+			</div>
+
+			} @empty {
+			<em>No users found</em>
+			}
+		</div>
+	</tech-tile>
+</div>
+}
