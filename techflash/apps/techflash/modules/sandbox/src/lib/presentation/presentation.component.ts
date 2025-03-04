@@ -1,5 +1,12 @@
 import { CommonModule, JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, linkedSignal, signal } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	computed,
+	effect,
+	linkedSignal,
+	signal,
+} from '@angular/core';
 
 interface Address {
 	street: string;
@@ -52,6 +59,12 @@ export class PresentationComponent {
 	});
 
 	linked = linkedSignal(() => this.signalObject().company);
+
+	// Przypisanie do zmiennej lub wywolanie w konstruktorze
+	myEffect = effect(() => {
+		console.log('User:', this.signalObject());
+		console.log(this.linked());
+	});
 
 	updateCompany = (): void => this.linked.set('Decerto');
 	updateUser = (): void =>

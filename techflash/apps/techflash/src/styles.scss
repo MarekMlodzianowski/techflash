@@ -129,7 +129,7 @@ ul {
 
 .flex,
 .grid {
-	@for $i from 1 through 24 {
+	@for $i from 1 through 32 {
 		&.gap-#{$i} {
 			gap: #{$i}px;
 		}
@@ -245,6 +245,16 @@ hr {
 	height: 2px;
 	background: linear-gradient(90deg, #007bff, #00bbff);
 	border-radius: 2px;
+}
+
+.sticky-bottom {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	background-color: white;
+	justify-content: center;
+	padding: 6px 16px;
 }
 
 /* Material Overwrite ####################################### */
