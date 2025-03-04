@@ -9,7 +9,12 @@ export const sandboxRoutes: Route[] = [
 			{
 				path: '',
 				pathMatch: 'full',
-				redirectTo: 'playground',
+				redirectTo: 'presentation',
+			},
+			{
+				path: 'presentation',
+				loadComponent: () =>
+					import('./presentation/presentation.component').then((m) => m.PresentationComponent),
 			},
 			{
 				path: 'playground',

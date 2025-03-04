@@ -222,6 +222,31 @@ a,
 	}
 }
 
+button {
+	background: linear-gradient(90deg, #007bff, #00bbff);
+	border: none;
+	color: white;
+	border-radius: 6px;
+	padding: 8px 16px;
+	cursor: pointer;
+	transition: 170ms;
+
+	&:hover {
+		background: linear-gradient(90deg, #0056b3, #003f7f);
+	}
+}
+
+hr {
+	border-top-color: var(--color-primary);
+	opacity: 0.2;
+}
+
+.divider {
+	height: 2px;
+	background: linear-gradient(90deg, #007bff, #00bbff);
+	border-radius: 2px;
+}
+
 /* Material Overwrite ####################################### */
 
 .mat-mdc-option.mdc-list-item {
@@ -254,22 +279,94 @@ div.mat-mdc-select-panel {
 }
 
 .material-symbols-outlined {
-	font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+	font-variation-settings:
+		'FILL' 0,
+		'wght' 400,
+		'GRAD' 0,
+		'opsz' 24;
 }
 
 /* Debugging ####################################### */
 pre {
-	background-color: #f8f9fa;
-	border: 1px solid var(--color-slate);
-	border-radius: 0.25rem;
-	padding: 16px;
-	white-space: pre-wrap;
+	padding: 8px;
+	border-radius: 6px;
+	max-height: 500px;
+	overflow-y: scroll;
+	background: #17374d;
+	color: #f0f0f0;
+	margin: 0;
 
-	&.crt {
-		background-color: #000;
-		color: #00ff00;
-		text-shadow: 0 0 5px #00ff00;
-		box-shadow: 0 0 10px 5px #00ff00;
+	&:before {
+		display: block;
+		content: attr(name);
+		background: #11212c;
+		margin: -8px -8px 8px;
+		width: calc(100% + 16px);
+		padding: 12px 8px;
+		font-size: var(--font-m);
+		box-shadow: rgb(0 0 0 / 0.3) 0 8px 11px;
+		position: sticky;
+		top: -8px;
+	}
+
+	&::before:empty {
+		display: none;
+	}
+
+	&.compact {
+		max-height: 200px;
+		padding: 4px 6px;
+		&::before {
+			padding: 6px 8px;
+			margin: -6px -6px 6px;
+		}
+
+		&,
+		&::before {
+			font-size: var(--font-xs);
+		}
+	}
+}
+.crt {
+	background-color: #0c140c;
+	color: #0c4d0c;
+	color: #52d84c;
+	text-shadow:
+		2px 0px 3px rgba(125, 215, 35, 0.368627451),
+		0px 0px 13px #bfaa2c,
+		-1px 0px 3px rgba(246, 106, 255, 0.7803921569);
+	border-radius: 26px;
+	padding: 12px;
+	border: solid 15px #121b0785;
+	box-shadow:
+		inset #614d256e 0 0 25px,
+		#00000036 0 0 4px 3px;
+
+	background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><defs><pattern id="crt-lines" width="100%" height="4" patternUnits="userSpaceOnUse"><rect width="100%" height="2" fill="rgba(0, 0, 0, 0.2)" /><rect y="2" width="100%" height="2" fill="rgba(255, 255, 255, 0)" /></pattern></defs><rect width="100%" height="100%" fill="url(%23crt-lines)" /></svg>');
+	background-size: cover;
+
+	&::selection {
+		color: white;
+	}
+
+	&::before {
+		display: none;
+	}
+	&::-webkit-scrollbar-thumb {
+		background-color: #0c4d0c;
+	}
+
+	&::-webkit-scrollbar {
+		background-color: #0c140c;
+	}
+
+	&.fixed {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		border-radius: 0 0 26px 26px;
+		z-index: 999;
 	}
 }
 

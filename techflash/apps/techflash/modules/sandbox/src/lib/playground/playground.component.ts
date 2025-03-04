@@ -1,3 +1,4 @@
+import { CommonModule, Location } from '@angular/common';
 import {
 	afterNextRender,
 	Component,
@@ -10,25 +11,18 @@ import {
 	TemplateRef,
 	ViewChild,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SandboxService } from '../sandbox.service';
-import { TileComponent } from '@techflash/shared-ui';
-import {
-	FormBuilder,
-	FormsModule,
-	NonNullableFormBuilder,
-	ReactiveFormsModule,
-} from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { RouterModule } from '@angular/router';
-import { MatSelectModule } from '@angular/material/select';
-import { Location } from '@angular/common';
-import { debounceTime, fromEvent, map } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { RouterModule } from '@angular/router';
+import { TileComponent } from '@techflash/shared-ui';
+import { debounceTime, fromEvent, map } from 'rxjs';
+import { SandboxService } from '../sandbox.service';
 
 export type User = {
 	id: number;
@@ -64,15 +58,18 @@ export type User = {
 		'[class.mobile]': 'windowSize() < 768',
 	},
 	styles: `
-  :host {
-   padding:16px;
-   border:solid 1px var(--color-slate);
-   &.mobile {
-    margin: 0 16px;
-    font-size: 18px;
-   }
-  .title {margin:0}}
-    `,
+		:host {
+			padding: 16px;
+			border: solid 1px var(--color-slate);
+			&.mobile {
+				margin: 0 16px;
+				font-size: 18px;
+			}
+			.title {
+				margin: 0;
+			}
+		}
+	`,
 })
 export class PlaygroundComponent {
 	id = input(undefined, { transform: numberAttribute });
@@ -82,10 +79,12 @@ export class PlaygroundComponent {
 	#location = inject(Location);
 	dialog = inject(MatDialog);
 
-	allUsers = this.#service.getAllUsers();
+	users = this.#service.getAllUsers();
 	userResource = this.#service.getUserResource();
-	userCompany = this.#service.getUserCOmpany();
+	userCompany = this.#service.getUserCompany();
 	relatedUsers = this.#service.getRelatedUsers();
+	companies = this.#service.getCompanies();
+	countries = this.#service.getCountries();
 
 	@ViewChild('formDialog') formDialog!: TemplateRef<any>;
 	dialogRef = this.dialog;
@@ -130,7 +129,7 @@ export class PlaygroundComponent {
 		}
 	}
 
-	dialogSave(formValue: unknown) {
+	dialogSave(formValue: unknown): void {
 		console.log(formValue);
 		this.userForm.reset();
 
@@ -153,9 +152,14 @@ export class PlaygroundComponent {
 	constructor() {
 		afterNextRender(() => {
 			console.log(`afterNextRender - id: ${this.id()}`);
-			const id = this.id();
-			if (id) this.#service.setId(id);
-			this.selectedId.set(id);
+			// 🪄 JavaScript 🪄
+			const id = !Number.isNaN(this.id()) ? this.id() : (this.users.value()?.[0]?.id ?? -1);
+			console.info(id);
+			if (id) {
+				this.#service.setId(id);
+				this.selectedId.set(id);
+				console.log(id);
+			}
 		});
 
 		this.#destroyRef.onDestroy(() => {

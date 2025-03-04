@@ -96,7 +96,7 @@ app.get('/api/users/:id', async (req: Request, res: Response, next: NextFunction
 		next(error);
 	}
 });
-//get users by company
+
 app.get(
 	'/api/users/byCompany/:companyId',
 	async (req: Request, res: Response, next: NextFunction) => {
@@ -124,6 +124,22 @@ app.get(
 		}
 	},
 );
+
+app.get('/api/companies/all', async (_req: Request, res: Response, next: NextFunction) => {
+	try {
+		const companyList = companies
+			.map((company) => ({
+				id: company.id,
+				name: company.name,
+			}))
+			.sort((a, b) => a.id - b.id);
+
+		await simulateDelay();
+		res.json(companyList);
+	} catch (error) {
+		next(error);
+	}
+});
 
 app.get('/api/companies/:id', async (req: Request, res: Response, next: NextFunction) => {
 	try {
@@ -182,7 +198,6 @@ app.get(
 	},
 );
 
-// Country routes
 app.get('/api/countries', (_req: Request, res: Response) => {
 	res.json(countries);
 });

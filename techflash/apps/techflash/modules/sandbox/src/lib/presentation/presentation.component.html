@@ -1,0 +1,93 @@
+<div class="flex col gap-24">
+	<section class="tile glass">
+		<p class="font-m">
+			Signal to prosta funkcja zwracająca obiekt. Ma wbudowane 2 settery (set i update) oraz 2
+			gettery (domyślny i asReadOnly)
+		</p>
+
+		<pre
+			class="crt"
+			name="signal()">
+	{{ signalObject() | json }}
+</pre
+		>
+
+		<div class="tile glass grid col-3 gap-8">
+			@let item = signalObject();
+			<div class="flex col gap-4">
+				<span class="font-xs">ID:</span>
+				<span>{{ item.id }}</span>
+			</div>
+			<div class="flex col gap-4">
+				<span class="font-xs">Name:</span>
+				<span>{{ item.name }}</span>
+			</div>
+			<div class="flex col gap-4">
+				<span class="font-xs">Email:</span>
+				<a class="link">{{ item.email }}</a>
+			</div>
+			<div class="flex col gap-4">
+				<span class="font-xs">Company:</span>
+				<span>{{ item.company }}</span>
+			</div>
+			<div class="flex col gap-4">
+				<span class="font-xs">Age:</span>
+				<span>{{ item.age }}</span>
+			</div>
+			<div class="flex col gap-4">
+				<span class="font-xs">Nationality:</span>
+				<span>{{ item.nationality }}</span>
+			</div>
+		</div>
+	</section>
+
+	<section class="tile glass">
+		<p class="font-m">
+			Computed jest funkcją memoizująca, ReadOnly. Każdy signals, który jest użyty wewnątrz jest
+			zależnością i jego aktualizacja powododuje przeliczenie wartości.
+			<br />
+			<br />
+			Przeliczenie następuje tylko w momencie zmiany zależności i przy pierwszym użyciu.
+
+			<br />
+			<br />
+			Może być używany jako alternatywa do "asReadOnly" dla innych signalsów;
+		</p>
+
+		<pre
+			class="crt"
+			name="computed()">
+  computedValue = computed(() => this.signalObject() + ' someString');
+</pre
+		>
+	</section>
+
+	<section class="tile glass">
+		<p class="font-m">
+			linkedSignal jest wariantem computed, z możliwością nadpisania wartości.
+			<br />
+			<br />
+			Gdy zmieni się dependency, zwracna zostaje domyślnie wartość z computed, ale można ją
+			nadpisać.
+		</p>
+
+		<pre
+			class="crt"
+			name="computed()">
+  linked = linkedSignal(() => this.signalObject().company); // default value
+  linked.set('new value'); // override value
+  linked() // 'new value'
+</pre
+		>
+
+		<pre class="crt">
+    {{ linked() | json }}
+  </pre
+		>
+
+		<div class="flex gap-8">
+			<button (click)="updateCompany()">Update linkedSignal</button>
+			<button (click)="updateUser()">Update dependency</button>
+		</div>
+	</section>
+</div>
