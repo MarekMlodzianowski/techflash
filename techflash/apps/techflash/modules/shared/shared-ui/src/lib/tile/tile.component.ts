@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, input, Resource } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LoadingSpinnerComponent } from '../loading/loading.component';
+import { ChangeDetectionStrategy, Component, computed, input, Resource } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { style } from '@angular/animations';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { DummyDirective } from '../dummy.directive';
+import { LoadingSpinnerComponent } from '../loading/loading.component';
 
 // common http error codes and messages
 
@@ -16,7 +17,12 @@ const ERROR_MESSAGES: { [key: number]: string } = {
 
 @Component({
 	selector: 'tech-tile',
-	imports: [CommonModule, LoadingSpinnerComponent, MatIconModule],
+	imports: [
+		CommonModule,
+		LoadingSpinnerComponent,
+		MatIconModule,
+		MatTooltipModule,
+	],
 	host: {
 		class: 'slide-down',
 		'[class.hidden]': 'resource().hasValue() === false',
@@ -24,6 +30,12 @@ const ERROR_MESSAGES: { [key: number]: string } = {
 	templateUrl: './tile.component.html',
 	styleUrl: './tile.component.scss',
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	hostDirectives: [
+		{
+			directive: DummyDirective,
+			inputs: [`techDummy`],
+		},
+	],
 })
 export class TileComponent {
 	title = input<string>();
@@ -33,6 +45,6 @@ export class TileComponent {
 		const error = this.resource()?.error() as any;
 		const status = error?.status;
 
-		return error ? error?.error?.message ?? ERROR_MESSAGES[status] ?? '🙉 Nieznany błąd ' : null;
+		return error ? (error?.error?.message ?? ERROR_MESSAGES[status] ?? '🙉 Nieznany błąd ') : null;
 	});
 }

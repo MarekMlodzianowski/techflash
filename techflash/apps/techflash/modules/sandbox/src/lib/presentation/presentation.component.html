@@ -1,101 +1,108 @@
-<div class="flex col gap-32">
-	<section class="tile glass">
-		<p class="font-xl">Signal()</p>
-		<p class="font-m">
-			Signal to prosta funkcja zwracająca obiekt. Ma wbudowane 2 settery (set i update) oraz 2
-			gettery (domyślny i asReadOnly)
-		</p>
+<section class="tile glass">
+	<p class="font-xl">Signal()</p>
+	<p class="font-m">
+		Signal to prosta funkcja zwracająca obiekt. Ma wbudowane 2 settery (set i update) oraz 2 gettery
+		(domyślny i asReadOnly)
+	</p>
 
-		<pre
-			class="crt"
-			name="signal()">
+	<pre
+		class="crt"
+		name="signal()">
+
+	signalObject = signal(
+	  id: 1,
+	  name: 'John Doe',
+	  email: 'john.doe[at]example.com'
+	)
+
+  <br>
+  ---
+  <br>
+
 	{{ signalObject() | json }}
-</pre
-		>
+</pre>
 
-		<div class="tile glass grid col-3 gap-8">
-			@let item = signalObject();
-			<div class="flex col gap-4">
-				<span class="font-xs">ID:</span>
-				<span>{{ item.id }}</span>
-			</div>
-			<div class="flex col gap-4">
-				<span class="font-xs">Name:</span>
-				<span>{{ item.name }}</span>
-			</div>
-			<div class="flex col gap-4">
-				<span class="font-xs">Email:</span>
-				<a class="link">{{ item.email }}</a>
-			</div>
-			<div class="flex col gap-4">
-				<span class="font-xs">Company:</span>
-				<span>{{ item.company }}</span>
-			</div>
-			<div class="flex col gap-4">
-				<span class="font-xs">Age:</span>
-				<span>{{ item.age }}</span>
-			</div>
-			<div class="flex col gap-4">
-				<span class="font-xs">Nationality:</span>
-				<span>{{ item.nationality }}</span>
-			</div>
+	<div class="tile glass grid col-3 gap-8">
+		@let item = signalObject();
+		<div class="flex col gap-4">
+			<span class="font-xs">ID:</span>
+			<span>{{ item.id }}</span>
 		</div>
-	</section>
+		<div class="flex col gap-4">
+			<span class="font-xs">Name:</span>
+			<span>{{ item.name }}</span>
+		</div>
+		<div class="flex col gap-4">
+			<span class="font-xs">Email:</span>
+			<a class="link">{{ item.email }}</a>
+		</div>
+		<div class="flex col gap-4">
+			<span class="font-xs">Company:</span>
+			<span>{{ item.company }}</span>
+		</div>
+		<div class="flex col gap-4">
+			<span class="font-xs">Age:</span>
+			<span>{{ item.age }}</span>
+		</div>
+		<div class="flex col gap-4">
+			<span class="font-xs">Nationality:</span>
+			<span>{{ item.nationality }}</span>
+		</div>
+	</div>
+</section>
 
-	<section class="tile glass">
-		<p class="font-xl">Computed()</p>
-		<p class="font-m">
-			Computed jest funkcją memoizująca, ReadOnly. Każdy signals, który jest użyty wewnątrz jest
-			zależnością i jego aktualizacja powododuje przeliczenie wartości.
-			<br />
-			<br />
-			Przeliczenie następuje tylko w momencie zmiany zależności i przy pierwszym użyciu.
+<section class="tile glass">
+	<p class="font-xl">Computed()</p>
+	<p class="font-m">
+		Computed jest funkcją memoizująca, ReadOnly. Każdy signals, który jest użyty wewnątrz jest
+		zależnością i jego aktualizacja powododuje przeliczenie wartości.
+		<br />
+		<br />
+		Przeliczenie następuje tylko w momencie zmiany zależności i przy pierwszym użyciu.
 
-			<br />
-			<br />
-			Może być używany jako alternatywa do "asReadOnly" dla innych signalsów;
-		</p>
+		<br />
+		<br />
+		Może być używany jako alternatywa do "asReadOnly" dla innych signalsów;
+	</p>
 
-		<pre
-			class="crt"
-			name="computed()">
-  computedValue = computed(() => this.signalObject() + ' someString');
+	<pre
+		class="crt"
+		name="computed()">
+  computedValue = computed(() => someTransformer(this.signalObject().value, flag));
 </pre
-		>
-	</section>
+	>
+</section>
 
-	<section class="tile glass">
-		<p class="font-xl">linkedSignal()</p>
-		<p class="font-m">
-			linkedSignal jest wariantem computed, z możliwością nadpisania wartości.
-			<br />
-			<br />
-			Gdy zmieni się dependency, zwracna zostaje domyślnie wartość z computed, ale można ją
-			nadpisać.
-		</p>
+<section class="tile glass">
+	<p class="font-xl">linkedSignal()</p>
+	<p class="font-m">
+		linkedSignal jest wariantem computed, z możliwością nadpisania wartości.
+		<br />
+		<br />
+		Gdy zmieni się dependency, zwracna zostaje domyślnie wartość z computed, ale można ją nadpisać.
+	</p>
 
-		<pre
-			class="crt"
-			name="linkedSignal()">
+	<pre
+		class="crt"
+		name="linkedSignal()">
   linked = linkedSignal(() => this.signalObject().company); // default value
   linked.set('new value'); // override value
   linked() // 'new value'
 </pre
-		>
+	>
 
-		<pre class="crt">
+	<pre class="crt">
     {{ linked() | json }}
-  </pre
-		>
-	</section>
+  </pre>
+</section>
 
-	<section class="tile glass">
-		<p class="font-xl">Effect()</p>
-		<p class="font-m">Effect to nasłuch każdego dependency - tym razem bez zwracanego wyniku.</p>
+<section class="tile glass">
+	<p class="font-xl">Effect()</p>
+	<p class="font-m">Effect to nasłuch każdego dependency - tym razem bez zwracanego wyniku.</p>
 
-		<pre
-			class="crt"
-			name="effect()">
+	<pre
+		class="crt"
+		name="effect()">
     effect(() =>
       console.log('User:', this.signalObject());
       console.log(this.linked());
@@ -103,10 +110,8 @@
 
     //console.log przy każdej zmianie linked i signal
 
-  </pre
-		>
-	</section>
-</div>
+  </pre>
+</section>
 
 <section class="tile glass">
 	<p class="font-xl">Untracked()</p>
@@ -114,9 +119,88 @@
 		Untracked to funkcja do opakowania signals wewnatrz funkcji computed i effect, aby móc nadać im
 		wartość, w innym przypadku dojdzie do cicle-dependency
 	</p>
+
+	<pre class="crt">
+    effect(() =>
+      ... // some code
+      untracked(() =>
+      this.linked.set('new value');
+      );
+    );
+    </pre
+	>
+</section>
+
+<section class="tile glass">
+	<p class="font-xl">toSignal() / toObservable()</p>
+	<p class="font-m">Mutacja obiektu do signals <-> observable</p>
+	<pre class="crt">
+    const signalObject = signal(
+      id: 1,
+      name: 'John Doe',
+      email: 'john.doe[at]example.com'
+    )
+
+    const observableObject = toObservable(signalObject); // flow rxjs
+    const signalObject = toSignal(observableObject);     // computedSignal
+  </pre>
+</section>
+
+<section class="tile glass">
+	<p class="font-xl">Control Flow()</p>
+	<p class="font-m">Nowy system ifologii, zastępujący dyrektywy strukturalne *ng...</p>
+
+	<pre class="crt">
+    {{ '@if (signalObject().company) {' }}
+    {{ '    app-company-details...' }}'
+    {{ '}' }}
+    {{ '@else {' }}
+    {{ '    app-other-details...' }}'
+    {{ '}' }}
+    </pre
+	>
+
+	<pre class="crt">
+  {{ '@for (item of items; track item.id) {' }}
+  {{ '    item.name' }}
+  {{ '}' }}
+  {{ '@empty {' }}
+  {{ '    No items' }}
+  {{ '}' }}
+  </pre>
+
+	<pre class="crt">
+    {{ '@switch (userPermissions) {' }}
+    {{ "   @case ('admin') {" }}
+    {{ '      \<app-admin-dashboard /\>' }}
+    {{ '      }' }}
+    {{ "   @case ('reviewer') {" }}
+    {{ '      \<app-reviewer-dashboard /\>' }}
+    {{ '      }' }}
+    {{ "   @case ('editor') {" }}
+    {{ '      \<app-editor-dashboard /\>' }}
+    {{ '      }' }}
+    {{ '   @default {' }}
+    {{ '      \<app-viewer-dashboard /\>' }}
+    {{ '      }' }}
+    {{ '}' }}
+  </pre>
 </section>
 
 <div class="flex gap-8 sticky-bottom">
-	<button (click)="updateCompany()">Update linkedSignal</button>
-	<button (click)="updateUser()">Update dependency</button>
+	<button
+		class="btn-secondary"
+		(click)="resetUser()">
+		Reset
+	</button>
+	<button
+		class="btn-primary"
+		(click)="updateCompany()">
+		set linkedSignal
+	</button>
+	<button
+		class="btn-primary"
+		(click)="updateUser()">
+		Update User
+	</button>
 </div>

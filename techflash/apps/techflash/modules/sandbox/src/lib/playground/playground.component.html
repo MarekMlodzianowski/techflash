@@ -17,6 +17,7 @@
 	<div class="flex col gap-16">
 		<tech-tile
 			title="User"
+			[techDummy]="userResource.isLoading()"
 			[resource]="userResource">
 			@let userValue = userResource.value();
 

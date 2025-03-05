@@ -47,11 +47,15 @@ const USER: User = {
 	templateUrl: './presentation.component.html',
 	styleUrl: './presentation.component.scss',
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	host: {
+		class: 'flex col gap-64',
+		style: 'gap:50vh; padding-bottom: 50vh',
+	},
 })
 export class PresentationComponent {
 	someProperty = 'someValue';
 
-	signalObject = signal(USER);
+	signalObject = signal(structuredClone(USER));
 
 	address = computed(() => {
 		const { street, city, state, postalCode } = this.signalObject().address;
@@ -66,6 +70,7 @@ export class PresentationComponent {
 		console.log(this.linked());
 	});
 
+	resetUser = (): void => this.signalObject.set(structuredClone(USER));
 	updateCompany = (): void => this.linked.set('Decerto');
 	updateUser = (): void =>
 		this.signalObject.update((user) => ({ ...user, name: 'Jane Doe', company: 'ZUS' }));

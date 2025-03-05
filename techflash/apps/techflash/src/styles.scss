@@ -223,16 +223,37 @@ a,
 }
 
 button {
-	background: linear-gradient(90deg, #007bff, #00bbff);
-	border: none;
-	color: white;
-	border-radius: 6px;
-	padding: 8px 16px;
-	cursor: pointer;
-	transition: 170ms;
+	&.btn-primary {
+		background: linear-gradient(90deg, #007bff, #00bbff);
+		border: none;
+		color: white;
+		border-radius: 6px;
+		padding: 8px 16px;
+		cursor: pointer;
+		transition: 300ms;
 
-	&:hover {
-		background: linear-gradient(90deg, #0056b3, #003f7f);
+		&:hover {
+			background: linear-gradient(90deg, #0056b3, #003f7f);
+		}
+	}
+
+	&.btn-secondary {
+		background: linear-gradient(90deg, #6c757d, #5a6268);
+		border: none;
+		color: white;
+		border-radius: 6px;
+		padding: 8px 16px;
+		cursor: pointer;
+		transition: 300ms;
+
+		&:hover {
+			background: linear-gradient(90deg, #545b62, #4e555b);
+		}
+	}
+
+	&:active {
+		transition: 100ms;
+		transform: scale(0.95);
 	}
 }
 
@@ -345,7 +366,7 @@ pre {
 		2px 0px 3px rgba(125, 215, 35, 0.368627451),
 		0px 0px 13px #bfaa2c,
 		-1px 0px 3px rgba(246, 106, 255, 0.7803921569);
-	border-radius: 26px;
+	border-radius: 14px;
 	padding: 12px;
 	border: solid 15px #121b0785;
 	box-shadow:
