@@ -1,11 +1,4 @@
-export type Company = {
-	id: number;
-	name: string;
-	countryCode: string;
-	address: string;
-	website: string;
-	stockCode: string;
-};
+import type { Company } from '@shared/types';
 
 export const companies: Company[] = [
 	{

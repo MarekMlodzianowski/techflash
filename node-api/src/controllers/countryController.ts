@@ -1,3 +1,4 @@
+import type { Country } from '@shared/types';
 import { NextFunction, Request, Response } from 'express';
 import { countries } from '../countries';
 import { simulateDelay } from '../utils/helpers';
@@ -28,7 +29,11 @@ export const getCountryByCode = async (req: Request, res: Response, next: NextFu
 	}
 };
 
-export const getCountryByName = async (req: Request, res: Response, next: NextFunction) => {
+export const getCountryByName = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+): Promise<Response<Country[]>> => {
 	try {
 		const name = req.params.name;
 

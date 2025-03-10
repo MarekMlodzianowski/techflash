@@ -1,4 +1,7 @@
-import { Company, companies } from './companies';
+/* eslint-disable max-lines */
+
+import type { Company } from '@shared/types';
+import companies from './companies';
 
 export type User = {
 	id: number;

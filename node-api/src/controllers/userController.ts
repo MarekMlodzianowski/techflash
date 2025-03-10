@@ -1,8 +1,14 @@
+import type { ReladedUsersResponse, User } from '@shared/types';
 import { NextFunction, Request, Response } from 'express';
+import { countries } from '../countries';
 import { getUserCompany, users } from '../users';
 import { simulateDelay } from '../utils/helpers';
 
-export const getAllUsers = async (_req: Request, res: Response, next: NextFunction) => {
+export const getAllUsers = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+): Promise<Response<User[]>> => {
 	try {
 		const ids = users
 			.map((user) => ({
@@ -11,14 +17,18 @@ export const getAllUsers = async (_req: Request, res: Response, next: NextFuncti
 			}))
 			.sort((a, b) => a.id - b.id);
 
-		await simulateDelay();
-		res.json(ids);
+		await simulateDelay(200);
+		return res.json(ids);
 	} catch (error) {
 		next(error);
 	}
 };
 
-export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
+export const getUserById = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+): Promise<Response<User>> => {
 	try {
 		const id = Number(req.params.id);
 
@@ -26,23 +36,27 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
 			return res.status(400).json({ message: 'Invalid user ID format' });
 		}
 
-		const user = users.find((user) => user.id === id);
-		await simulateDelay();
+		const targetUser = users.find((user) => user.id === id);
+		await simulateDelay(300);
 
-		if (!user) {
+		if (!targetUser) {
 			return res.status(404).json({ message: 'User not found' });
 		}
 
 		res.json({
-			...user,
-			company: getUserCompany(user.id)?.name ?? '-',
+			...targetUser,
+			company: getUserCompany(targetUser.id)?.name ?? '-',
 		});
 	} catch (error) {
 		next(error);
 	}
 };
 
-export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+export const updateUser = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+): Promise<Response<User>> => {
 	try {
 		const id = Number(req.params.id);
 
@@ -50,26 +64,33 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
 			return res.status(400).json({ message: 'Invalid user ID format' });
 		}
 
-		const user = users.find((user) => user.id === id);
-		await simulateDelay();
+		const targetUser = users.find((user) => user.id === id);
+		await simulateDelay(150);
 
-		if (!user) {
+		if (!targetUser) {
 			return res.status(404).json({ message: 'User not found' });
 		}
 
 		Object.entries(req.body).forEach(([key, value]) => {
-			if (key in user) {
-				user[key] = value;
+			if (key in targetUser) {
+				targetUser[key] = value;
 			}
 		});
 
-		res.json({ message: 'User name updated successfully', user });
+		res.json({
+			...targetUser,
+			company: getUserCompany(targetUser.id)?.name ?? '-',
+		});
 	} catch (error) {
 		next(error);
 	}
 };
 
-export const getUsersByCompany = async (req: Request, res: Response, next: NextFunction) => {
+export const getUsersByCompany = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+): Promise<Response<ReladedUsersResponse>> => {
 	try {
 		const companyId = Number(req.params.companyId);
 
@@ -94,7 +115,11 @@ export const getUsersByCompany = async (req: Request, res: Response, next: NextF
 	}
 };
 
-export const getUsersByCountry = async (req: Request, res: Response, next: NextFunction) => {
+export const getUsersByCountry = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+): Promise<Response<User[]>> => {
 	try {
 		const countryCode = req.params.countryCode as string;
 
@@ -102,16 +127,16 @@ export const getUsersByCountry = async (req: Request, res: Response, next: NextF
 			return res.status(400).json({ message: 'Invalid country code format' });
 		}
 
-		const country = countries.find(
+		const targetCountry = countries.find(
 			(country) => country.code.toLowerCase() === countryCode.toLowerCase(),
 		);
 
-		if (!country) {
+		if (!targetCountry) {
 			return res.status(404).json({ message: 'Country not found' });
 		}
 
 		const usersByCountry = users
-			.filter((user) => user.country === country.name)
+			.filter((user) => user.country === targetCountry.name)
 			.map((user) => {
 				return {
 					...user,
@@ -126,6 +151,3 @@ export const getUsersByCountry = async (req: Request, res: Response, next: NextF
 		next(error);
 	}
 };
-
-// Missing import - need to add it
-import { countries } from '../countries';

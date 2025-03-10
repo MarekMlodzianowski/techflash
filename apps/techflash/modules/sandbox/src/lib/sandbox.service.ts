@@ -1,45 +1,27 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal, type Resource, type Signal } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import type { Country, ReladedUsersResponse, User } from '@shared/types';
 import { firstValueFrom, map } from 'rxjs';
-import { User } from './playground/playground.component';
-
-type Country = {
-	id: number;
-	name: string;
-	code: string;
-	capital: string;
-	population: number;
-};
-
-type ReladedUsersResponse = {
-	company: string;
-	users: User[];
-	userCount: number;
-};
-
-export type Company = {
-	id: number;
-	name: string;
-	countryCode: string;
-	address: string;
-	website: string;
-	stockCode: string;
-};
+import type { Company } from './country/country.component';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class SandboxService {
+	//Inject zastępuje deklaracje z konstruktora
 	#http = inject(HttpClient);
+	// Mozna tez uzyc bezposrednio funkcji zwracanej z takiego modulu np: fibonnachi = inject(Utils).fibonnachi
 
+	// "#" oznacza prywatne pola i jest natywnym rozwiazaniem JS (zastępuje private)
 	#id = signal(-1);
 	#countryCode = signal('');
 	#pendingRequests = signal<string[]>([]);
 
 	#isFetching = computed(() => this.#pendingRequests().length > 0);
 
-	#user = computed(() => this.#userById?.value());
+	//EXPERIMENTAL, ale daje dobry poglad w ktora strone zmierza angular
+	//https://angular.dev/api/core/rxjs-interop/rxResource
 
 	// #region Countries #########################################################
 
@@ -61,10 +43,13 @@ export class SandboxService {
 	//#endregion
 
 	// #region Users #############################################################
+	#user = computed(() => this.#userById?.value());
+
 	#allUsers = rxResource({
 		loader: () => this.#http.get<User[]>(`/api/users/all`),
 	});
 
+	// Zapytanie wykona sie tylko gdy request zwróci wartość inną niż undefined
 	#userById = rxResource({
 		request: () => (this.#id() !== -1 ? this.#id() : undefined),
 		loader: ({ request: name }) => this.#http.get<User>(`/api/users/${name}`),
@@ -76,6 +61,7 @@ export class SandboxService {
 			this.#http.get<User[]>(`/api/users/byCountry/${countryCode}`),
 	});
 
+	// Przykład z mapowaniem na poziomie strumienia rxjs, poprawna alternatywa bylby strzał + computed
 	#relatedUsers = rxResource({
 		request: () => this.#user()?.companyId,
 		loader: ({ request: companyId }) =>
@@ -88,6 +74,19 @@ export class SandboxService {
 				}),
 			),
 	});
+
+	//^-- alternatywa
+	// #relatedUsers = computed((): ReladedUsersResponse => {
+	// 	const company = this.#relatedUsers.value()?.company ?? '---';
+	// 	const users = (this.#relatedUsers.value()?.users ?? []).filter(
+	// 		(user) => user.id !== this.#user()?.id,
+	// 	);
+	// 	return {
+	// 		company,
+	// 		users,
+	// 		userCount: users.length,
+	// 	};
+	// });
 
 	//#endregion
 
@@ -109,13 +108,26 @@ export class SandboxService {
 	setId = (value: number): void => this.#id.set(value);
 
 	updateUserById = async (user: User): Promise<void> => {
-		await firstValueFrom(this.#http.put(`/api/users/${user.id}`, user));
+		const updatedUser = await firstValueFrom(this.#http.put<User>(`/api/users/${user.id}`, user));
 
-		this.#companyByCountry.reload();
-		this.#usersByCountry.reload();
-		this.#userById.reload();
-		this.#allUsers.reload();
+		// A
+		// Ręczne odświeżenie danych po zakończeniu update, przydatne gdy aktualizowany zasób nie ma bezpośredniego powiazania z innymi.
+
+		// this.#companyByCountry.reload();
+		// this.#usersByCountry.reload();
+		// this.#userById.reload();
+		// this.#allUsers.reload();
+
+		// B
+		// vs refresh głównego resource, aby wymusić odświeżenie wszystkich zależnych
+		this.#userById.update((value) => {
+			return updatedUser ? { ...updatedUser } : value;
+		});
 	};
+
+	// asReadonly jest dodatkowym zabezpieczeniem aby wymusić mutacje tylko przez metody w serwisie. Computed domyślnie są readonly, stad brak annotacji w isFetching
+
+	isFetching = (): Signal<boolean> => this.#isFetching;
 
 	getUsersByCountry = (): Resource<User[] | undefined> => this.#usersByCountry.asReadonly();
 	getAllUsers = (): Resource<User[] | undefined> => this.#allUsers.asReadonly();
@@ -134,8 +146,6 @@ export class SandboxService {
 	getCompaniesByCountry = (): Resource<Company[] | undefined> =>
 		this.#companyByCountry.asReadonly();
 
-	isFetching = (): Signal<boolean> => this.#isFetching;
-
 	setPendingRequest = (request: string, action: 'remove' | 'add' = 'add'): void => {
 		if (action === 'remove') {
 			setTimeout(() => {
@@ -145,5 +155,7 @@ export class SandboxService {
 		}
 
 		this.#pendingRequests.set([...this.#pendingRequests(), request]);
+		// vs alternatywnie
+		// this.#pendingRequests.update((value) => [...value, request]);
 	};
 }

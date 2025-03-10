@@ -18,6 +18,9 @@
 		"skipDefaultLibCheck": true,
 		"baseUrl": ".",
 		"paths": {
+			"@shared/types": [
+				"libs/shared-types/src/index.ts"
+			],
 			"@techflash/sandbox": [
 				"apps/techflash/modules/sandbox/src/index.ts"
 			],

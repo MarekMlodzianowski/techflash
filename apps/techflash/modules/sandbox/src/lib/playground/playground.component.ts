@@ -8,8 +8,8 @@ import {
 	linkedSignal,
 	numberAttribute,
 	signal,
-	TemplateRef,
-	ViewChild,
+	viewChild,
+	type TemplateRef,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
@@ -20,22 +20,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
+import type { User } from '@shared/types';
 import { TileComponent } from '@techflash/shared-ui';
 import { debounceTime, fromEvent, map } from 'rxjs';
 import { SandboxService } from '../sandbox.service';
-
-export type User = {
-	id: number;
-	name: string;
-	email: string;
-	country: string;
-	city: string;
-	phone: string;
-	website: string;
-	company?: string;
-	companyId: number;
-	address: string;
-};
 
 @Component({
 	selector: 'tech-techflash-sandbox',
@@ -86,7 +74,8 @@ export class PlaygroundComponent {
 	companies = this.#service.getCompanies();
 	countries = this.#service.getCountries();
 
-	@ViewChild('formDialog') formDialog!: TemplateRef<any>;
+	// @ViewChild('formDialog') formDialog!: TemplateRef<unknown>;
+	formDialog = viewChild<TemplateRef<unknown>>('formDialog');
 	dialogRef = this.dialog;
 
 	#fb = inject(NonNullableFormBuilder);
@@ -103,6 +92,7 @@ export class PlaygroundComponent {
 		id: 0,
 	});
 
+	// Mozna nadpisac (set / update jak zwykly signal), wroci do default gdy zmieni sie dependency (tutaj id)
 	selectedId = linkedSignal(() => this.id());
 
 	windowSize = toSignal(
@@ -115,14 +105,15 @@ export class PlaygroundComponent {
 
 	userInput = signal('');
 
-	updateUrl(id: number) {
+	updateUrl(id: number): void {
 		this.selectedId.set(id);
 		this.#service.setId(id);
 		this.#location.replaceState(`/sandbox/playground/${id}`);
 	}
 
 	openDialog(): void {
-		this.dialogRef.open(this.formDialog);
+		const formDialog = this.formDialog();
+		if (formDialog !== undefined) this.dialogRef.open(formDialog);
 
 		if (this.userResource.hasValue()) {
 			this.userForm.patchValue(this.userResource.value());
