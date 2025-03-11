@@ -3,11 +3,13 @@ import {
 	afterNextRender,
 	Component,
 	DestroyRef,
+	effect,
 	inject,
 	input,
 	linkedSignal,
 	numberAttribute,
 	signal,
+	untracked,
 	viewChild,
 	type TemplateRef,
 } from '@angular/core';
@@ -141,16 +143,34 @@ export class PlaygroundComponent {
 	}
 
 	constructor() {
-		afterNextRender(() => {
-			console.log(`afterNextRender - id: ${this.id()}`);
-			// 🪄 JavaScript 🪄
-			const id = !Number.isNaN(this.id()) ? this.id() : (this.users.value()?.[0]?.id ?? -1);
-			console.info(id);
+		// Przyklad jednorazowego effektu, niszczymy gdy spelni warunek, mozna uzywac do inicjalizacji
+		const firstUserEffect = effect(() => {
+			const id = this.users.value()?.[0]?.id;
 			if (id) {
-				this.#service.setId(id);
-				this.selectedId.set(id);
-				console.log(id);
+				untracked(() => {
+					this.#service.setId(id);
+					this.selectedId.set(id);
+					console.log(id);
+					firstUserEffect.destroy();
+				});
 			}
+		});
+
+		// https://angular.dev/api/core/afterNextRender#
+		// Dobra aternatywa do hookow ngOnInit, ngAfterViewInit, ngAfterContentInit
+
+		afterNextRender({
+			read: () => {
+				console.log(`afterNextRender - id: ${this.id()}`);
+				// 🪄 JavaScript 🪄
+				const id = !Number.isNaN(this.id()) ? this.id() : (this.users.value()?.[0]?.id ?? -1);
+				console.info(`afterNextRender ${this.users.value()}`);
+				if (id) {
+					this.#service.setId(id);
+					this.selectedId.set(id);
+					console.log(id);
+				}
+			},
 		});
 
 		this.#destroyRef.onDestroy(() => {

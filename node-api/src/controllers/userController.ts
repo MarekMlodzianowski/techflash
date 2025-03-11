@@ -10,6 +10,7 @@ export const getAllUsers = async (
 	next: NextFunction,
 ): Promise<Response<User[]>> => {
 	try {
+		await simulateDelay(200);
 		const ids = users
 			.map((user) => ({
 				id: user.id,
@@ -17,7 +18,6 @@ export const getAllUsers = async (
 			}))
 			.sort((a, b) => a.id - b.id);
 
-		await simulateDelay(200);
 		return res.json(ids);
 	} catch (error) {
 		next(error);
@@ -30,6 +30,7 @@ export const getUserById = async (
 	next: NextFunction,
 ): Promise<Response<User>> => {
 	try {
+		await simulateDelay(300);
 		const id = Number(req.params.id);
 
 		if (isNaN(id)) {
@@ -37,7 +38,6 @@ export const getUserById = async (
 		}
 
 		const targetUser = users.find((user) => user.id === id);
-		await simulateDelay(300);
 
 		if (!targetUser) {
 			return res.status(404).json({ message: 'User not found' });
@@ -58,6 +58,7 @@ export const updateUser = async (
 	next: NextFunction,
 ): Promise<Response<User>> => {
 	try {
+		await simulateDelay(150);
 		const id = Number(req.params.id);
 
 		if (isNaN(id)) {
@@ -65,7 +66,6 @@ export const updateUser = async (
 		}
 
 		const targetUser = users.find((user) => user.id === id);
-		await simulateDelay(150);
 
 		if (!targetUser) {
 			return res.status(404).json({ message: 'User not found' });
@@ -92,6 +92,7 @@ export const getUsersByCompany = async (
 	next: NextFunction,
 ): Promise<Response<ReladedUsersResponse>> => {
 	try {
+		await simulateDelay(100);
 		const companyId = Number(req.params.companyId);
 
 		if (isNaN(companyId)) {
@@ -99,7 +100,6 @@ export const getUsersByCompany = async (
 		}
 
 		const usersByCompany = users.filter((user) => getUserCompany(user.id)?.id === companyId);
-		await simulateDelay(100);
 
 		if (usersByCompany.length === 0) {
 			return res.status(404).json({ message: 'No users found for this company' });
@@ -121,6 +121,7 @@ export const getUsersByCountry = async (
 	next: NextFunction,
 ): Promise<Response<User[]>> => {
 	try {
+		await simulateDelay(100);
 		const countryCode = req.params.countryCode as string;
 
 		if (!countryCode || countryCode.length !== 2) {
@@ -143,7 +144,6 @@ export const getUsersByCountry = async (
 					company: getUserCompany(user.id)?.name ?? '-',
 				};
 			});
-		await simulateDelay(100);
 
 		res.json(usersByCountry);
 	} catch (error) {

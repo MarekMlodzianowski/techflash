@@ -3,27 +3,34 @@ import { NextFunction, Request, Response } from 'express';
 import { countries } from '../countries';
 import { simulateDelay } from '../utils/helpers';
 
-export const getAllCountries = (_req: Request, res: Response) => {
+export const getAllCountries = async (
+	req: Request,
+	res: Response,
+): Promise<Response<Country[]>> => {
+	await simulateDelay();
 	res.json(countries);
 };
 
-export const getCountryByCode = async (req: Request, res: Response, next: NextFunction) => {
+export const getCountryByCode = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+): Promise<Response<Country[]>> => {
 	try {
+		await simulateDelay(200);
 		const code = req.params.code.toUpperCase();
 
 		if (!code || code.length !== 2) {
 			return res.status(400).json({ message: 'Invalid country code format' });
 		}
 
-		const country = countries.find((country) => country.code.toUpperCase() === code);
+		const targetCountry = countries.find((country) => country.code.toUpperCase() === code);
 
-		await simulateDelay(200);
-
-		if (!country) {
+		if (!targetCountry) {
 			return res.status(404).json({ message: 'Country not found' });
 		}
 
-		res.json(country);
+		res.json(targetCountry);
 	} catch (error) {
 		next(error);
 	}
@@ -35,21 +42,22 @@ export const getCountryByName = async (
 	next: NextFunction,
 ): Promise<Response<Country[]>> => {
 	try {
+		await simulateDelay(200);
 		const name = req.params.name;
 
 		if (!name || name.length < 2) {
 			return res.status(400).json({ message: 'Invalid country name' });
 		}
 
-		const country = countries.find((country) => country.name.toLowerCase() === name.toLowerCase());
+		const targetCountry = countries.find(
+			(country) => country.name.toLowerCase() === name.toLowerCase(),
+		);
 
-		await simulateDelay(200);
-
-		if (!country) {
+		if (!targetCountry) {
 			return res.status(404).json({ message: 'Country not found' });
 		}
 
-		res.json(country);
+		res.json(targetCountry);
 	} catch (error) {
 		next(error);
 	}

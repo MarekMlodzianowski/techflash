@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal, type Resource, type Signal } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import type { Country, ReladedUsersResponse, User } from '@shared/types';
+import type { Company, Country, ReladedUsersResponse, User } from '@shared/types';
 import { firstValueFrom, map } from 'rxjs';
-import type { Company } from './country/country.component';
 
 @Injectable({
 	providedIn: 'root',

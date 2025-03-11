@@ -5,15 +5,6 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TileComponent } from '@techflash/shared-ui';
 import { SandboxService } from '../sandbox.service';
 
-export type Company = {
-	id: number;
-	name: string;
-	countryCode: string;
-	address: string;
-	website: string;
-	stockCode: string;
-};
-
 @Component({
 	imports: [
 		CommonModule,
@@ -29,6 +20,11 @@ export type Company = {
 export class CountryComponent {
 	countryCode = input.required<string>();
 
+	service = inject(SandboxService);
+
+	//Przykład nasłuchu parametrow jako signals
+	//Activated route mozna (powinno) sie przypisac do zmiennej jezeli jest uzyty wiecej razy
+	//activatedRoute = inject(ActivatedRoute);...
 	queryParams = toSignal(inject(ActivatedRoute).queryParams);
 	routeParams = toSignal(inject(ActivatedRoute).params);
 
@@ -39,16 +35,16 @@ export class CountryComponent {
 		};
 	});
 
-	service = inject(SandboxService);
-
 	country = this.service.getCountryByCode();
 	companies = this.service.getCompaniesByCountry();
 	users = this.service.getUsersByCountry();
 
 	constructor() {
-		afterNextRender(() => {
-			console.log('CountryComponent rendered');
-			this.service.setCountryCode(this.countryCode());
+		afterNextRender({
+			read: () => {
+				console.log('CountryComponent rendered');
+				this.service.setCountryCode(this.countryCode());
+			},
 		});
 	}
 }
