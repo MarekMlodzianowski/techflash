@@ -3,13 +3,13 @@ import companies from '../companies';
 import { countries } from '../countries';
 import { getUserCompany } from '../users';
 import { simulateDelay } from '../utils/helpers';
-import { type Company } from '@shared/types';
+import { type Company, CompanyListResponse } from '@shared/types';
 
 export const getAllCompanies = async (
 	req: Request,
 	res: Response,
 	next: NextFunction,
-): Promise<Response<Company[]>> => {
+): Promise<Response<CompanyListResponse[]>> => {
 	try {
 		await simulateDelay();
 		const companyList = companies

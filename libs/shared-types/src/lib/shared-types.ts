@@ -37,3 +37,13 @@ export type Company = {
 	website: string;
 	stockCode: string;
 };
+
+export type CompanyListResponse = {
+	id: number;
+	name: string;
+};
+
+export type UserListResponse = {
+	id: number;
+	name: string;
+};

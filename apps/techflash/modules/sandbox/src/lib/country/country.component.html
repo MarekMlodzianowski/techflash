@@ -62,7 +62,7 @@
 		<span class="font-xs">Email:</span>
 		<span class="font-xs">Company:</span>
 
-		@for (user of users.value() ?? []; track $index) {
+		@for (user of users.value(); track $index) {
 			<div class="flex col gap-4">
 				<a [routerLink]="['/sandbox/playground/' + user.id]">{{ user.name }}</a>
 			</div>
