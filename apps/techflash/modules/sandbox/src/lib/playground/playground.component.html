@@ -1,0 +1,213 @@
+<div class="tile glass">
+	<mat-form-field>
+		<mat-select
+			placeholder="Select User"
+			[(value)]="selectedId"
+			(valueChange)="updateUrl($event)">
+			@for (user of users.value(); track $index) {
+				<mat-option [value]="user.id">
+					{{ user.name }}
+				</mat-option>
+			}
+		</mat-select>
+	</mat-form-field>
+</div>
+
+@if (selectedId()) {
+	<div class="flex col gap-16">
+		<tech-tile
+			title="User"
+			[techDummy]="userResource.isLoading()"
+			[resource]="userResource">
+			@let userValue = userResource.value();
+
+			<div
+				class="grid gap-4"
+				[ngClass]="[windowSize() < 768 ? 'col-1' : 'col-3']">
+				<div class="flex col gap-4">
+					<span class="font-xs">Name:</span>
+					<button
+						class="link flex a-center gap-4"
+						(click)="openDialog()">
+						<span>{{ userValue?.name }}</span>
+						<mat-icon
+							class="font-xs"
+							[fontIcon]="'edit'" />
+					</button>
+				</div>
+				<div class="flex col gap-4">
+					<span class="font-xs">Email:</span>
+					<a class="link">{{ userValue?.email }}</a>
+				</div>
+				<div class="flex col gap-4">
+					<span class="font-xs">Phone:</span>
+					<a class="link">{{ userValue?.phone }}</a>
+				</div>
+				<div class="flex col gap-4">
+					<span class="font-xs">Website:</span>
+					<a class="link">{{ userValue?.website }}</a>
+				</div>
+				<div class="flex col gap-4">
+					<span class="font-xs">Company:</span>
+					<span>{{ userValue?.company }}</span>
+				</div>
+				<div class="flex col gap-4">
+					<span class="font-xs">Address:</span>
+					<span>{{ userValue?.address }}, {{ userValue?.country }}</span>
+				</div>
+			</div>
+		</tech-tile>
+
+		<tech-tile
+			title="Company"
+			[resource]="userCompany">
+			@let userCompanyVal = userCompany.value();
+			<div
+				class="grid gap-4"
+				[ngClass]="[windowSize() < 768 ? 'col-1' : 'col-3']">
+				<div class="flex col gap-4">
+					<span class="font-xs">Name:</span>
+					<a>{{ userCompanyVal?.name ?? '...' }}</a>
+				</div>
+				<div class="flex col gap-4">
+					<span class="font-xs">stockCode:</span>
+					<button class="link">
+						{{ userCompanyVal?.stockCode || '...' }}
+					</button>
+				</div>
+				<div class="flex col gap-4">
+					<span class="font-xs">website:</span>
+					<a>{{ userCompanyVal?.website ?? '...' }}</a>
+				</div>
+				<div class="flex col gap-4">
+					<span class="font-xs">address:</span>
+					<a>{{ userCompanyVal?.address || '...' }}</a>
+				</div>
+				<div class="flex col gap-4">
+					<span class="font-xs">country Code:</span>
+					<a [routerLink]="['/sandbox/country/' + userCompanyVal?.countryCode]">
+						{{ userCompanyVal?.countryCode ?? '...' }}
+					</a>
+				</div>
+			</div>
+		</tech-tile>
+
+		@let relatedUsersValue = relatedUsers.value();
+
+		<tech-tile
+			[title]="'Related users'"
+			[resource]="relatedUsers">
+			<div
+				class="grid gap-6 related-users"
+				[ngClass]="[windowSize() < 768 ? 'col-1' : 'col-3']">
+				@if (relatedUsersValue?.users?.length) {
+					<span class="font-xs">Name:</span>
+					<span class="font-xs">Email:</span>
+					<span class="font-xs">Phone:</span>
+				}
+				@for (user of relatedUsersValue?.users; track $index) {
+					<div class="flex col gap-4">
+						<button
+							class="link"
+							(click)="updateUrl(user.id)">
+							{{ user.name }}
+						</button>
+					</div>
+					<div class="flex col gap-4">
+						<span>{{ user.email }}</span>
+					</div>
+					<div class="flex col gap-4">
+						<span>{{ user.phone }}</span>
+					</div>
+				} @empty {
+					<em>No users found</em>
+				}
+			</div>
+		</tech-tile>
+	</div>
+}
+
+<ng-template #formDialog>
+	<mat-dialog-content>
+		<form [formGroup]="userForm">
+			<div class="flex col gap-12">
+				<div class="flex col gap-4">
+					<mat-form-field>
+						<mat-label>Name</mat-label>
+						<input
+							matInput
+							formControlName="name" />
+					</mat-form-field>
+				</div>
+				<div class="flex col gap-4">
+					<mat-form-field>
+						<mat-label>Email</mat-label>
+						<input
+							matInput
+							formControlName="email" />
+					</mat-form-field>
+				</div>
+				<div class="flex col gap-4">
+					<mat-form-field>
+						<mat-label>Phone</mat-label>
+						<input
+							matInput
+							formControlName="phone" />
+					</mat-form-field>
+				</div>
+				<div class="flex col gap-4">
+					<mat-form-field>
+						<mat-label>Website</mat-label>
+						<input
+							matInput
+							formControlName="website" />
+					</mat-form-field>
+				</div>
+				<div class="flex col gap-4">
+					<mat-form-field>
+						<mat-label>Company</mat-label>
+						<mat-select formControlName="companyId">
+							<mat-option
+								*ngFor="let company of companies.value()"
+								[value]="company.id">
+								{{ company.name }}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</div>
+				<div class="flex col gap-4">
+					<mat-form-field>
+						<mat-label>Address</mat-label>
+						<input
+							matInput
+							formControlName="address" />
+					</mat-form-field>
+				</div>
+				<div class="flex col gap-4">
+					<mat-form-field>
+						<mat-label>Country</mat-label>
+						<mat-select formControlName="country">
+							<mat-option
+								*ngFor="let country of countries.value()"
+								[value]="country.id">
+								{{ country.name }}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</div>
+			</div>
+		</form>
+	</mat-dialog-content>
+	<mat-dialog-actions>
+		<button
+			mat-button
+			matDialogClose>
+			Cancel
+		</button>
+		<button
+			mat-button
+			(click)="dialogSave(userForm.value)">
+			Save
+		</button>
+	</mat-dialog-actions>
+</ng-template>

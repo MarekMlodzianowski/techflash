@@ -1,0 +1,36 @@
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+		"rootDir": ".",
+		"sourceMap": true,
+		"declaration": false,
+		"moduleResolution": "node",
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"importHelpers": true,
+		"target": "ESNext",
+		"module": "esnext",
+		"lib": [
+			"ESNext",
+			"dom"
+		],
+		"skipLibCheck": true,
+		"skipDefaultLibCheck": true,
+		"baseUrl": ".",
+		"paths": {
+			"@shared/types": [
+				"libs/shared-types/src/index.ts"
+			],
+			"@techflash/sandbox": [
+				"apps/techflash/modules/sandbox/src/index.ts"
+			],
+			"@techflash/shared-ui": [
+				"apps/techflash/modules/shared/shared-ui/src/index.ts"
+			]
+		}
+	},
+	"exclude": [
+		"node_modules",
+		"tmp"
+	]
+}

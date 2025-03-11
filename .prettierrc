@@ -1,0 +1,40 @@
+{
+	"$schema": "https://json.schemastore.org/prettierrc",
+	"plugins": ["prettier-plugin-multiline-arrays"],
+	"multilineArraysWrapThreshold": 2,
+	"singleQuote": true,
+	"printWidth": 100,
+	"singleAttributePerLine": true,
+	"bracketSameLine": true,
+	"endOfLine": "lf",
+	"useTabs": true,
+	"htmlWhitespaceSensitivity": "ignore",
+	"bracketSpacing": true,
+"quoteProps": "as-needed",
+	"tabWidth": 2,
+	"overrides": [
+		{
+			"files": "*.spec.ts",
+			"options": {
+				"printWidth": 120,
+				"arrowParens": "avoid"
+			}
+		},
+		{
+			"files": "*.json",
+			"options": {
+				"printWidth": 120,
+				"arrowParens": "avoid",
+				"trailingComma": "all"
+			}
+		},
+		{
+			"files": "*.mjs",
+			"options": {
+				"printWidth": 120,
+				"arrowParens": "avoid",
+				"trailingComma": "all"
+			}
+		}
+	]
+}
