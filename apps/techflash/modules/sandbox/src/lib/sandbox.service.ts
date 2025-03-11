@@ -1,7 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal, type Resource, type Signal } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import type { Company, Country, ReladedUsersResponse, User } from '@shared/types';
+import type {
+	Company,
+	Country,
+	ReladedUsersResponse,
+	User,
+	CompanyListResponse,
+	UserListResponse,
+} from '@shared/types';
 import { firstValueFrom, map } from 'rxjs';
 
 @Injectable({
@@ -26,6 +33,7 @@ export class SandboxService {
 
 	#countries = rxResource({
 		loader: () => this.#http.get<Country[]>(`/api/countries`),
+		defaultValue: [],
 	});
 
 	#countryByCode = rxResource({
@@ -38,6 +46,7 @@ export class SandboxService {
 		request: () => (this.#countryCode() ? this.#countryCode() : undefined),
 		loader: ({ request: countryCode }) =>
 			this.#http.get<Company[]>(`/api/companies/byCountry/${countryCode}`),
+		defaultValue: [] as Company[],
 	});
 	//#endregion
 
@@ -45,7 +54,8 @@ export class SandboxService {
 	#user = computed(() => this.#userById?.value());
 
 	#allUsers = rxResource({
-		loader: () => this.#http.get<User[]>(`/api/users/all`),
+		loader: () => this.#http.get<UserListResponse[]>(`/api/users/all`),
+		defaultValue: [],
 	});
 
 	// Zapytanie wykona sie tylko gdy request zwróci wartość inną niż undefined
@@ -58,6 +68,7 @@ export class SandboxService {
 		request: () => (this.#countryCode() ? this.#countryCode() : undefined),
 		loader: ({ request: countryCode }) =>
 			this.#http.get<User[]>(`/api/users/byCountry/${countryCode}`),
+		defaultValue: [],
 	});
 
 	// Przykład z mapowaniem na poziomie strumienia rxjs, poprawna alternatywa bylby strzał + computed
@@ -72,6 +83,7 @@ export class SandboxService {
 					};
 				}),
 			),
+		defaultValue: { company: '---', users: [], userCount: 0 },
 	});
 
 	//^-- alternatywa
@@ -97,11 +109,12 @@ export class SandboxService {
 	});
 
 	#companies = rxResource({
-		loader: () => this.#http.get<{ id: number; name: string }[]>(`/api/companies/all`),
+		loader: () => this.#http.get<CompanyListResponse[]>(`/api/companies/all`),
+		defaultValue: [],
 	});
 
 	//#endregion
-
+	// Inne podejscie do zapytan, zamiast resource mozemy wywolac http opakowanego w toSignal z domylsna wartoscia
 	countryResource = toSignal(this.#http.get<Country[]>(`/api/countries`), { initialValue: [] });
 
 	setId = (value: number): void => this.#id.set(value);
@@ -130,19 +143,17 @@ export class SandboxService {
 
 	isFetching = (): Signal<boolean> => this.#isFetching;
 
-	getUsersByCountry = (): Resource<User[] | undefined> => this.#usersByCountry.asReadonly();
-	getAllUsers = (): Resource<User[] | undefined> => this.#allUsers.asReadonly();
+	getUsersByCountry = (): Resource<User[]> => this.#usersByCountry.asReadonly();
+	getAllUsers = (): Resource<UserListResponse[]> => this.#allUsers.asReadonly();
 	getUserResource = (): Resource<User | undefined> => this.#userById.asReadonly();
 	getUserCompany = (): Resource<Company | undefined> => this.#companyById.asReadonly();
-	getRelatedUsers = (): Resource<ReladedUsersResponse | undefined> =>
-		this.#relatedUsers.asReadonly();
+	getRelatedUsers = (): Resource<ReladedUsersResponse> => this.#relatedUsers.asReadonly();
 
-	getCountries = (): Resource<Country[] | undefined> => this.#countries.asReadonly();
+	getCountries = (): Resource<Country[]> => this.#countries.asReadonly();
 	setCountryCode = (value: string): void => this.#countryCode.set(value);
 	getCountryByCode = (): Resource<Country | undefined> => this.#countryByCode.asReadonly();
 
-	getCompanies = (): Resource<{ id: number; name: string }[] | undefined> =>
-		this.#companies.asReadonly();
+	getCompanies = (): Resource<{ id: number; name: string }[]> => this.#companies.asReadonly();
 
 	getCompaniesByCountry = (): Resource<Company[] | undefined> =>
 		this.#companyByCountry.asReadonly();

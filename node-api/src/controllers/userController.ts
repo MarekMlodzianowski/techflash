@@ -1,4 +1,4 @@
-import type { ReladedUsersResponse, User } from '@shared/types';
+import type { ReladedUsersResponse, User, UserListResponse } from '@shared/types';
 import { NextFunction, Request, Response } from 'express';
 import { countries } from '../countries';
 import { getUserCompany, users } from '../users';
@@ -8,7 +8,7 @@ export const getAllUsers = async (
 	req: Request,
 	res: Response,
 	next: NextFunction,
-): Promise<Response<User[]>> => {
+): Promise<Response<UserListResponse[]>> => {
 	try {
 		await simulateDelay(200);
 		const ids = users
