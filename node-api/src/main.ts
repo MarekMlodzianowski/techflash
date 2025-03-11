@@ -19,7 +19,7 @@ const app = express();
 app.use(express.json()); // Parse JSON requests
 
 // Root endpoint
-app.get('/', (_req, res) => {
+app.get('/', (req, res) => {
 	res.json({
 		message: 'Hello API',
 		version: '1.0.0',

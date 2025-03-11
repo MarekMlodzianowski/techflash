@@ -8,7 +8,7 @@ export const getAllCountries = async (
 	res: Response,
 ): Promise<Response<Country[]>> => {
 	await simulateDelay();
-	res.json(countries);
+	return res.json(countries);
 };
 
 export const getCountryByCode = async (
@@ -30,7 +30,7 @@ export const getCountryByCode = async (
 			return res.status(404).json({ message: 'Country not found' });
 		}
 
-		res.json(targetCountry);
+		return res.json(targetCountry);
 	} catch (error) {
 		next(error);
 	}
@@ -57,7 +57,7 @@ export const getCountryByName = async (
 			return res.status(404).json({ message: 'Country not found' });
 		}
 
-		res.json(targetCountry);
+		return res.json(targetCountry);
 	} catch (error) {
 		next(error);
 	}

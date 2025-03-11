@@ -3,6 +3,7 @@ import companies from '../companies';
 import { countries } from '../countries';
 import { getUserCompany } from '../users';
 import { simulateDelay } from '../utils/helpers';
+import { type Company } from '@shared/types';
 
 export const getAllCompanies = async (
 	req: Request,
@@ -18,7 +19,7 @@ export const getAllCompanies = async (
 			}))
 			.sort((a, b) => a.id - b.id);
 
-		res.json(companyList);
+		return res.json(companyList);
 	} catch (error) {
 		next(error);
 	}
@@ -30,7 +31,7 @@ export const getCompanyById = async (
 	next: NextFunction,
 ): Promise<Response<Company>> => {
 	try {
-		await simulateDelay(1500);
+		await simulateDelay(2000);
 		const id = Number(req.params.id);
 
 		if (isNaN(id)) {
@@ -43,7 +44,7 @@ export const getCompanyById = async (
 			return res.status(404).json({ message: 'Company not found' });
 		}
 
-		res.json(company);
+		return res.json(company);
 	} catch (error) {
 		next(error);
 	}
@@ -72,7 +73,7 @@ export const getCompaniesByCountry = async (
 
 		const companiesByCountry = companies.filter((item) => item.countryCode === countryCode);
 
-		res.json(companiesByCountry);
+		return res.json(companiesByCountry);
 	} catch (error) {
 		next(error);
 	}

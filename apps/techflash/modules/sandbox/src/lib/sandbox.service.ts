@@ -122,6 +122,8 @@ export class SandboxService {
 		this.#userById.update((value) => {
 			return updatedUser ? { ...updatedUser } : value;
 		});
+
+		this.#allUsers.reload(); //all users nie ma zależności, więc nie odświeży się automatycznie
 	};
 
 	// asReadonly jest dodatkowym zabezpieczeniem aby wymusić mutacje tylko przez metody w serwisie. Computed domyślnie są readonly, stad brak annotacji w isFetching
